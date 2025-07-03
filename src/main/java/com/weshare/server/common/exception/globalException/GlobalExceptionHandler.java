@@ -21,7 +21,7 @@ import java.util.Arrays;
 @Slf4j
 @RequiredArgsConstructor
 public class GlobalExceptionHandler {
-    private final String devMode = "dev";
+    private static final String devMode = "dev";
     private final Environment env;
 
     // 각 도메인에서 처리되지 못한 모든 GlobalException 핸들러
@@ -63,6 +63,13 @@ public class GlobalExceptionHandler {
         GlobalException globalException = new GlobalException(GlobalExceptions.ARGUMENT_TYPE_MISMATCH);
         return resolveExceptionResponse(e,globalException);
     }
+
+
+    // TODO MethodArgumentNotValidException - 400 처리
+
+    // TODO AuthenticationException - 401 처리
+
+    // TODO AccessDeniedException - 403 처리
 
     // 404 글로벌 예외처리
     @ExceptionHandler (NoHandlerFoundException.class)
