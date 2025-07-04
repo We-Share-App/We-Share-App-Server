@@ -6,8 +6,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -64,12 +67,26 @@ public class GlobalExceptionHandler {
         return resolveExceptionResponse(e,globalException);
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<GlobalErrorResponse> notValidHandler(MethodArgumentNotValidException e) {
+        log.error("[MethodArgumentNotValidException] {}: {} \n Exception stackTrace: ", e.getClass().getName(), e.getMessage(),e);
+        GlobalException globalException = new GlobalException(GlobalExceptions.ARGUMENT_NOT_VALID);
+        return resolveExceptionResponse(e,globalException);
+    }
 
-    // TODO MethodArgumentNotValidException - 400 처리
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<GlobalErrorResponse> authenticationFailHandler(AuthenticationException e) {
+        log.error("[AuthenticationException] {}: {} \n Exception stackTrace: ", e.getClass().getName(), e.getMessage(),e);
+        GlobalException globalException = new GlobalException(GlobalExceptions.AUTHENTICATION_FAILURE);
+        return resolveExceptionResponse(e,globalException);
+    }
 
-    // TODO AuthenticationException - 401 처리
-
-    // TODO AccessDeniedException - 403 처리
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<GlobalErrorResponse> accessDeniedHandler(AccessDeniedException e) {
+        log.error("[AccessDeniedException] {}: {} \n Exception stackTrace: ", e.getClass().getName(), e.getMessage(),e);
+        GlobalException globalException = new GlobalException(GlobalExceptions.AUTHORIZATION_FAILURE);
+        return resolveExceptionResponse(e,globalException);
+    }
 
     // 404 글로벌 예외처리
     @ExceptionHandler (NoHandlerFoundException.class)
