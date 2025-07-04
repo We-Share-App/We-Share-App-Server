@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,21 @@ public class User extends BaseTimeEntity {
     private String email; // 사용자 이메일
     private String phoneNumber; // 사용자 전화번호
     private UserRole userRole; // 사용자 구분
+
+    public User(String username,String name, String email, UserRole userRole){
+        this.username = username;
+        this.name = name;
+        this.email = email;
+        this.userRole = userRole;
+    }
+
+    public String changeName(String name){
+        this.name = name;
+        return name;
+    }
+
+    public String changeEmail(String email){
+        this.email = email;
+        return email;
+    }
 }

@@ -1,7 +1,7 @@
-package com.weshare.server.user.jwt;
+package com.weshare.server.user.oauthJwt;
 
-import com.weshare.server.user.dto.CustomOAuth2User;
-import com.weshare.server.user.dto.UserDTO;
+import com.weshare.server.user.oauthJwt.dto.CustomOAuth2User;
+import com.weshare.server.user.oauthJwt.dto.UserDTO;
 import com.weshare.server.user.entity.UserRole;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,7 +37,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
             log.info("[JWTFilter] NULL AccessToken");
             filterChain.doFilter(request, response);
-
             //조건이 해당되면 메소드 종료 (필수)
             return;
         }

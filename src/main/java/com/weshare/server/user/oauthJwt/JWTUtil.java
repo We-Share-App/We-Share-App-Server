@@ -1,4 +1,4 @@
-package com.weshare.server.user.jwt;
+package com.weshare.server.user.oauthJwt;
 
 import com.weshare.server.user.entity.UserRole;
 import io.jsonwebtoken.Jwts;
