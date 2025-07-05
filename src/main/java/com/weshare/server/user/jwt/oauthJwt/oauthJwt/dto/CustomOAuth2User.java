@@ -1,5 +1,6 @@
-package com.weshare.server.user.oauthJwt.dto;
+package com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto;
 
+import com.weshare.server.user.jwt.dto.UserDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 

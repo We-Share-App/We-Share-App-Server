@@ -1,11 +1,11 @@
 package com.weshare.server.common.config;
 
-import com.weshare.server.user.oauthJwt.CustomLogoutFilter;
-import com.weshare.server.user.oauthJwt.CustomSuccessHandler;
-import com.weshare.server.user.oauthJwt.JWTFilter;
-import com.weshare.server.user.oauthJwt.JWTUtil;
-import com.weshare.server.user.oauthJwt.exception.JWTAuthenticationEntryPoint;
-import com.weshare.server.user.oauthJwt.service.CustomOAuth2UserService;
+import com.weshare.server.user.jwt.filter.CustomLogoutFilter;
+import com.weshare.server.user.jwt.handler.CustomSuccessHandler;
+import com.weshare.server.user.jwt.filter.JWTFilter;
+import com.weshare.server.user.jwt.util.JWTUtil;
+import com.weshare.server.user.jwt.exception.JWTAuthenticationEntryPoint;
+import com.weshare.server.user.jwt.oauthJwt.oauthJwt.service.CustomOAuth2UserService;
 import com.weshare.server.user.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -30,6 +30,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final CustomSuccessHandler customSuccessHandler;
     private final JWTUtil jwtUtil;
+    private final JWTFilter jwtFilter;
     private final RefreshRepository refreshRepository;
     private final JWTAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
@@ -61,8 +62,7 @@ public class SecurityConfig {
                 new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         //JWTFilter 등록
-        http.addFilterBefore(
-                new JWTFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(jwtFilter, ExceptionTranslationFilter.class);
 
         //oauth2
         http

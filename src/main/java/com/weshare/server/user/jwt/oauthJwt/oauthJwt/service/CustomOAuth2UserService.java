@@ -1,8 +1,12 @@
-package com.weshare.server.user.oauthJwt.service;
+package com.weshare.server.user.jwt.oauthJwt.oauthJwt.service;
 
 import com.weshare.server.user.entity.User;
 import com.weshare.server.user.entity.UserRole;
-import com.weshare.server.user.oauthJwt.dto.*;
+import com.weshare.server.user.jwt.dto.UserDTO;
+import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.CustomOAuth2User;
+import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.GoogleResponse;
+import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.NaverResponse;
+import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.OAuth2Response;
 import com.weshare.server.user.repository.UserRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -47,26 +51,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (existData == null) {
 
             User user = new User(username,oAuth2Response.getName(),oAuth2Response.getEmail(),UserRole.ROLE_USER);
-            //user.setUsername(username);
-            //user.setEmail(oAuth2Response.getEmail());
-            //user.setName(oAuth2Response.getName());
-            //user.setRole("ROLE_USER");
-
             userRepository.save(user);
 
             UserDTO userDTO = new UserDTO();
             userDTO.setUsername(username);
             userDTO.setName(oAuth2Response.getName());
             userDTO.setUserRole(UserRole.ROLE_USER);
-            //userDTO.setRole("ROLE_USER");
 
             return new CustomOAuth2User(userDTO); // OAuth2User 객체 반환
         }
         // 기존에 DB에 저장된 회원인 경우 -> DB 업데이트
         else {
-
-            //existData.setEmail(oAuth2Response.getEmail()); // 추후 setter 대신,  changeEmail() 도입 예정
-            //existData.setName(oAuth2Response.getName()); // 추후 setter 대신,  changeName() 도입 예정
             existData.changeEmail(oAuth2Response.getEmail());
             existData.changeName(oAuth2Response.getName());
 

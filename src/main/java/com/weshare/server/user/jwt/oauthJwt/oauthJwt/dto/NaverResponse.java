@@ -1,26 +1,26 @@
-package com.weshare.server.user.oauthJwt.dto;
+package com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto;
 
 import java.util.Map;
 
-public class GoogleResponse implements OAuth2Response{
+public class NaverResponse implements OAuth2Response{
 
     private final Map<String, Object> attribute;
 
-    public GoogleResponse(Map<String, Object> attribute) {
+    public NaverResponse(Map<String, Object> attribute) {
 
-        this.attribute = attribute;
+        this.attribute = (Map<String, Object>) attribute.get("response");
     }
 
     @Override
     public String getProvider() {
 
-        return "google";
+        return "naver";
     }
 
     @Override
     public String getProviderId() {
 
-        return attribute.get("sub").toString();
+        return attribute.get("id").toString();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.weshare.server.user.oauthJwt.exception;
+package com.weshare.server.user.jwt.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

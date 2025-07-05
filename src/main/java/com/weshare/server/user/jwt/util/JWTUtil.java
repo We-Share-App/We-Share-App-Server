@@ -1,4 +1,4 @@
-package com.weshare.server.user.oauthJwt;
+package com.weshare.server.user.jwt.util;
 
 import com.weshare.server.user.entity.UserRole;
 import io.jsonwebtoken.Jwts;
@@ -36,11 +36,16 @@ public class JWTUtil {
         return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().get("category", String.class);
     }
 
-    // 토큰 -> 만료여부 리턴 메서드
-    public Boolean isExpired(String token) {
-
-        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration().before(new Date());
+    public boolean isExpired(String token) {
+        try {
+            Date exp = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload().getExpiration();
+            return exp.before(new Date());
+        } catch (io.jsonwebtoken.ExpiredJwtException ex) {
+            // 만료 예외도 “만료된 토큰”으로 간주
+            return true;
+        }
     }
+
 
     public String createJwt(String category, String username, UserRole userRole, Long expiredMs) {
 

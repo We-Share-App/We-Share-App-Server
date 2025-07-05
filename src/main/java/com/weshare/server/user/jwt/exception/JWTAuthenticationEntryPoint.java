@@ -1,4 +1,4 @@
-package com.weshare.server.user.oauthJwt.exception;
+package com.weshare.server.user.jwt.exception;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
@@ -26,13 +26,15 @@ public class JWTAuthenticationEntryPoint implements AuthenticationEntryPoint {
             JWTErrorResponse body = new JWTErrorResponse(jwtException);
 
             response.setStatus(status.value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write(mapper.writeValueAsString(body));
         }
         // JWTException 이 아닌 예기치 못한 예외가 발생한 경우
         else{
             HttpStatus status = HttpStatus.UNAUTHORIZED;
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE+ ";charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().write("상세 정보 알 수 없음");
         }
     }

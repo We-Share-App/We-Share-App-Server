@@ -1,8 +1,9 @@
-package com.weshare.server.user.oauthJwt;
+package com.weshare.server.user.jwt.handler;
 
 import com.weshare.server.user.entity.Refresh;
 import com.weshare.server.user.entity.UserRole;
-import com.weshare.server.user.oauthJwt.dto.CustomOAuth2User;
+import com.weshare.server.user.jwt.util.JWTUtil;
+import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.CustomOAuth2User;
 import com.weshare.server.user.repository.RefreshRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -40,9 +41,6 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
-
-        //String accessToken = jwtUtil.createJwt("access",username, role, 600000L); // Access 토큰
-        //String refreshToken = jwtUtil.createJwt("refresh",username,role,86400000L); // refresh 토큰
 
         String accessToken = jwtUtil.createJwt("access",username, UserRole.stringToUserRole(role) , 600000L); // Access 토큰
         String refreshToken = jwtUtil.createJwt("refresh",username, UserRole.stringToUserRole(role),86400000L); // refresh 토큰

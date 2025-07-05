@@ -1,5 +1,6 @@
-package com.weshare.server.user.oauthJwt;
+package com.weshare.server.user.jwt.filter;
 
+import com.weshare.server.user.jwt.util.JWTUtil;
 import com.weshare.server.user.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;

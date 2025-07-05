@@ -1,8 +1,11 @@
-package com.weshare.server.user.oauthJwt;
+package com.weshare.server.user.jwt.filter;
 
-import com.weshare.server.user.oauthJwt.dto.CustomOAuth2User;
-import com.weshare.server.user.oauthJwt.dto.UserDTO;
+import com.weshare.server.user.jwt.util.JWTUtil;
+import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.CustomOAuth2User;
+import com.weshare.server.user.jwt.dto.UserDTO;
 import com.weshare.server.user.entity.UserRole;
+import com.weshare.server.user.jwt.exception.JWTException;
+import com.weshare.server.user.jwt.exception.JWTExceptions;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,10 +25,13 @@ import java.io.PrintWriter;
 public class JWTFilter extends OncePerRequestFilter {
 
     private final JWTUtil jwtUtil;
+    private final HandlerExceptionResolver resolver;
 
-    public JWTFilter(JWTUtil jwtUtil) {
+    public JWTFilter(JWTUtil jwtUtil,HandlerExceptionResolver resolver) {
 
         this.jwtUtil = jwtUtil;
+        this.resolver = resolver;
+        log.info(">>> Injected HandlerExceptionResolver = {}", resolver.getClass().getName());
     }
 
     // 클라이언트의 Access 토큰 검사 메서드
@@ -33,24 +41,16 @@ public class JWTFilter extends OncePerRequestFilter {
         String accessToken = request.getHeader("access");
 
         //access 헤더 검증
-        if (accessToken == null) {
-
-            log.info("[JWTFilter] NULL AccessToken");
-            filterChain.doFilter(request, response);
-            //조건이 해당되면 메소드 종료 (필수)
-            return;
+        // null 이거나, 공백(empty) 이면 NO_ACCESS_TOKEN
+        if (!StringUtils.hasText(accessToken)) {
+            throw new JWTException(JWTExceptions.NO_ACCESS_TOKEN);
         }
 
         //토큰 소멸 시간 검증
         if (jwtUtil.isExpired(accessToken)) {
 
             log.info("[JWTFilter] Expired AccessToken");
-            PrintWriter writer = response.getWriter();
-            writer.print("access token expired");
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            //조건이 해당되면 메소드 종료 (필수)
-            return;
+            throw new JWTException(JWTExceptions.EXPIRED_ACCESS_TOKEN);
         }
 
         // 토큰 종류 판별 (access/refresh)

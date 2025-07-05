@@ -1,4 +1,4 @@
-package com.weshare.server.user.oauthJwt.dto;
+package com.weshare.server.user.jwt.dto;
 
 import com.weshare.server.user.entity.UserRole;
 import lombok.AllArgsConstructor;

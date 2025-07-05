@@ -1,4 +1,4 @@
-package com.weshare.server.user.oauthJwt.dto;
+package com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto;
 
 public interface OAuth2Response {
     //제공자 (Ex. naver, google, ...)
