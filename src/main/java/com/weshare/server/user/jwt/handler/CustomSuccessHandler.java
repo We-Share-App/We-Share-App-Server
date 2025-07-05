@@ -3,7 +3,7 @@ package com.weshare.server.user.jwt.handler;
 import com.weshare.server.user.entity.Refresh;
 import com.weshare.server.user.entity.UserRole;
 import com.weshare.server.user.jwt.util.JWTUtil;
-import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.CustomOAuth2User;
+import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import com.weshare.server.user.repository.RefreshRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;

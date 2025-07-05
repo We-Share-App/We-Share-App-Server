@@ -1,4 +1,4 @@
-package com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto;
+package com.weshare.server.user.jwt.oauthJwt.dto;
 
 import java.util.Map;
 

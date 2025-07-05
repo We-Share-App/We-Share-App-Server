@@ -1,12 +1,12 @@
-package com.weshare.server.user.jwt.oauthJwt.oauthJwt.service;
+package com.weshare.server.user.jwt.oauthJwt.service;
 
 import com.weshare.server.user.entity.User;
 import com.weshare.server.user.entity.UserRole;
 import com.weshare.server.user.jwt.dto.UserDTO;
-import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.CustomOAuth2User;
-import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.GoogleResponse;
-import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.NaverResponse;
-import com.weshare.server.user.jwt.oauthJwt.oauthJwt.dto.OAuth2Response;
+import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
+import com.weshare.server.user.jwt.oauthJwt.dto.GoogleResponse;
+import com.weshare.server.user.jwt.oauthJwt.dto.NaverResponse;
+import com.weshare.server.user.jwt.oauthJwt.dto.OAuth2Response;
 import com.weshare.server.user.repository.UserRepository;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;

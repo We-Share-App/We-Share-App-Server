@@ -5,7 +5,7 @@ import com.weshare.server.user.jwt.handler.CustomSuccessHandler;
 import com.weshare.server.user.jwt.filter.JWTFilter;
 import com.weshare.server.user.jwt.util.JWTUtil;
 import com.weshare.server.user.jwt.exception.JWTAuthenticationEntryPoint;
-import com.weshare.server.user.jwt.oauthJwt.oauthJwt.service.CustomOAuth2UserService;
+import com.weshare.server.user.jwt.oauthJwt.service.CustomOAuth2UserService;
 import com.weshare.server.user.repository.RefreshRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

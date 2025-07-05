@@ -1,9 +1,12 @@
 package com.weshare.server.user.jwt.util;
 
 import com.weshare.server.user.entity.UserRole;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -43,6 +46,29 @@ public class JWTUtil {
         } catch (io.jsonwebtoken.ExpiredJwtException ex) {
             // 만료 예외도 “만료된 토큰”으로 간주
             return true;
+        }
+    }
+
+    public boolean isValidForm(String token) {
+        // 토큰이 아예 없거나 빈 문자열이면 false
+        if (!StringUtils.hasText(token)) {
+            return false;
+        }
+
+        try {
+            // 구조·서명·Base64 디코딩까지 모두 시도
+            Jwts.parser()
+                    .verifyWith(secretKey)
+                    .build()
+                    .parseSignedClaims(token);
+            // 파싱 성공: 완전 유효한 토큰
+            return true;
+        } catch (ExpiredJwtException ex) {
+            // 해당 메서드에서는 만료된 토큰도 형식상 문제는 없기에 정상 토큰으로 판정
+            return true;
+        } catch (JwtException | IllegalArgumentException ex) {
+            // 서명 불일치, MalformedJwtException 등 포맷 오류
+            return false;
         }
     }
 
