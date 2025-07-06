@@ -2,9 +2,7 @@ package com.weshare.server.user.jwt.controller;
 
 import com.weshare.server.user.jwt.dto.ReIssueResponse;
 import com.weshare.server.user.jwt.service.ReIssueService;
-import com.weshare.server.user.jwt.util.JWTUtil;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/reissue")
 public class reIssueController {
-
     private final ReIssueService reIssueService;
 
     @Operation(
