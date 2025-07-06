@@ -62,6 +62,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         //refresh null check
         if (refresh == null) {
 
+            System.out.println("리프레시가 널이다");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -72,6 +73,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         } catch (ExpiredJwtException e) {
 
             //response status code
+            System.out.println("이미 만료된 프레시다");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -81,6 +83,7 @@ public class CustomLogoutFilter extends GenericFilterBean {
         if (!category.equals("refresh")) {
 
             //response status code
+            System.out.println("리프레시 토큰이 아니다.");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -88,16 +91,18 @@ public class CustomLogoutFilter extends GenericFilterBean {
         //DB에 저장되어 있는지 확인
         Boolean isExist = refreshRepository.existsByRefresh(refresh);
         if (!isExist) {
-
+            System.out.println("리프레시 토큰이 디비에 없다.");
             //response status code
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 
+        System.out.println("일단 리프레시 제거 직전까지는 돌아갔다.");
         //로그아웃 진행
         //Refresh 토큰 DB에서 제거
         refreshRepository.deleteByRefresh(refresh);
 
+        System.out.println("일단 리프레시 제거 까진 돌아갔다.");
         //Refresh 토큰 Cookie 값 0
         Cookie cookie = new Cookie("refresh", null);
         cookie.setMaxAge(0);

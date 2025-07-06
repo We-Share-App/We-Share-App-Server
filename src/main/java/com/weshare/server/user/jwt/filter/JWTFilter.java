@@ -25,7 +25,7 @@ import java.io.IOException;
 public class JWTFilter extends OncePerRequestFilter {
     private final JWTUtil jwtUtil;
 
-    // 스웨거는 토큰없이 접근 허용
+    // 스웨거, 로그아웃, 리프레시 토큰 재발급은 JWTFilter 를 생략하고 다음 필터로 넘어간다.
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
@@ -33,6 +33,8 @@ public class JWTFilter extends OncePerRequestFilter {
                 || path.startsWith("/swagger-ui/")
                 || path.equals("/swagger-ui.html")
                 || path.equals("/swagger-ui/index.html")
+                || path.equals("/logout")
+                || path.equals("/reissue")
                 || path.startsWith("/webjars/");
     }
 

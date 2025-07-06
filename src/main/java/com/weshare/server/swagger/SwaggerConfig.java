@@ -15,23 +15,53 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
+//    @Bean
+//    public OpenAPI customOpenApiAccessToken() {
+//        String securitySchemeName = "accessToken"; // Security Scheme 이름
+//
+//        return new OpenAPI()
+//                .info(new Info()
+//                        .title("We_Gift API") // API 제목
+//                        .description("We_Gift 개발용 Swagger") // API 설명
+//                        .version("1.0.0")) // 버전 정보
+//                .components(new Components()
+//                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
+//                                .name("access") // 헤더명: access
+//                                .type(SecurityScheme.Type.APIKEY) // API Key 방식
+//                                .in(SecurityScheme.In.HEADER) // 헤더에 추가
+//                        )
+//                )
+//                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName)); // 모든 API에 보안 요구 사항 추가
+//    }
+
     @Bean
     public OpenAPI customOpenApiAccessToken() {
-        String securitySchemeName = "accessToken"; // Security Scheme 이름
+        String accessScheme = "accessToken";
+        String refreshScheme = "refreshToken";
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("We_Gift API") // API 제목
-                        .description("We_Gift 개발용 Swagger") // API 설명
-                        .version("1.0.0")) // 버전 정보
+                        .title("We_Gift API")
+                        .description("We_Gift 개발용 Swagger")
+                        .version("1.0.0"))
                 .components(new Components()
-                        .addSecuritySchemes(securitySchemeName, new SecurityScheme()
-                                .name("access") // 헤더명: access
-                                .type(SecurityScheme.Type.APIKEY) // API Key 방식
-                                .in(SecurityScheme.In.HEADER) // 헤더에 추가
+                        // Header 기반 accessToken
+                        .addSecuritySchemes(accessScheme, new SecurityScheme()
+                                .name("access")
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.HEADER)
+                        )
+                        // Cookie 기반 refreshToken
+                        .addSecuritySchemes(refreshScheme, new SecurityScheme()
+                                .name("refresh")
+                                .type(SecurityScheme.Type.APIKEY)
+                                .in(SecurityScheme.In.COOKIE)
                         )
                 )
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName)); // 모든 API에 보안 요구 사항 추가
+                .addSecurityItem(new SecurityRequirement()
+                        .addList(accessScheme)
+                        .addList(refreshScheme)
+                );
     }
 
     @Bean
