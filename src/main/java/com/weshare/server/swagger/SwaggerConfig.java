@@ -41,8 +41,8 @@ public class SwaggerConfig {
 
         return new OpenAPI()
                 .info(new Info()
-                        .title("We_Gift API")
-                        .description("We_Gift 개발용 Swagger")
+                        .title("We_Share API")
+                        .description("We_Share 개발용 Swagger")
                         .version("1.0.0"))
                 .components(new Components()
                         // Header 기반 accessToken
