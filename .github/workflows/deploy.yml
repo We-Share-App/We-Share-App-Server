@@ -49,3 +49,22 @@ jobs:
           key: ${{secrets.EC2_PRIVATE_KEY}}
 
 
+      - name: SSH로 Bastion HOST에 접속해 was(프라이빗 서버)로 project.jar 전송
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USERNAME}}
+          key: ${{secrets.EC2_PRIVATE_KEY}}
+          script: |
+            echo "[INFO] 프라이빗 서버용 키 생성 중..."
+            echo "${{secrets.EC2_PRIVATE_KEY}}" > /tmp/private_key.pem
+            chmod 600 /tmp/private_key.pem
+
+            echo "[INFO] 프라이빗 서버로 JAR 파일 전송 중..."
+            scp -i /tmp/private_key.pem -o StrictHostKeyChecking=no \
+              /home/ubuntu/was/tobe/project.jar ubuntu@10.0.1.38:/home/ubuntu/was/server
+
+            echo "[INFO] 임시 키파일 삭제 중..."
+            rm -f /tmp/private_key.pem
+
+
