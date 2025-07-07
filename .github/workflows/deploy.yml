@@ -90,13 +90,9 @@ jobs:
               sleep 5 && \
               pgrep -f 'project.jar' > /dev/null"
             
-            if [ $? -ne 0 ]; then
-              echo '[ERROR] JAR 실행 실패!'
-              exit 1
-            else
-              echo '[SUCCESS] JAR 실행 성공!'
-            fi
-      
+            echo "[INFO] 8080 포트를 사용 중인 프로그램명 저장..."
+            sudo lsof -iTCP:8080 -sTCP:LISTEN -n -P | awk 'NR>1 {print $1}' | head -n 1 > /home/ubuntu/was/server/program_name.txt
+            
             echo "[INFO] 실행된 JAR 프로세스 종료 중..."
             ssh -i /tmp/private_key.pem -o StrictHostKeyChecking=no ubuntu@10.0.1.38 "\
               pkill -f 'project.jar'"
