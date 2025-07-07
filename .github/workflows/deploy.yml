@@ -115,18 +115,23 @@ jobs:
       - name: WAS 서버 기동
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{secrets.EC2_HOST}}
-          username: ${{secrets.EC2_USERNAME}}
-          key: ${{secrets.EC2_PRIVATE_KEY}}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-            echo "${{secrets.EC2_PRIVATE_KEY}}" > /tmp/private_key.pem
+            # 임시 키파일 생성
+            echo "${{ secrets.EC2_PRIVATE_KEY }}" > /tmp/private_key.pem
             chmod 600 /tmp/private_key.pem
-            
-            ssh -i /tmp/private_key.pem -o StrictHostKeyChecking=no ubuntu@10.0.1.38 "\
-              sudo fuser -k -n tcp 8080 || true && \
-              nohup java -jar /home/ubuntu/was/server/project.jar > /home/ubuntu/was/server/running.log 2>&1 & \
-              exit 0"
-            
+
+            # Here-doc 로 원격 명령 실행
+            ssh -i /tmp/private_key.pem -o StrictHostKeyChecking=no ubuntu@10.0.1.38 << 'EOF'
+              sudo fuser -k -n tcp 8080 || true
+              nohup java -jar /home/ubuntu/was/server/project.jar \
+                > /home/ubuntu/was/server/running.log 2>&1 < /dev/null &
+              exit 0
+            EOF
+
+            # 키파일 삭제
             rm -f /tmp/private_key.pem
 
             
