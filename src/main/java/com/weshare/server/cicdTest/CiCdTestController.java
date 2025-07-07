@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CiCdTestController {
     @GetMapping
     public String test(){
-        return "CI/CD 최종 테스트 성공 \n 소웨공 We-share\n Let's go !!";
+        return "[CI/CD 최종 테스트 성공] - 팀 We-share Let's go !!";
     }
 }
