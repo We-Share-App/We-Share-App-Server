@@ -97,7 +97,7 @@ jobs:
             echo "[INFO] 임시 키파일 삭제 중..."
             rm -f /tmp/private_key.pem
 
-      - name: 프라이빗 서버 로그 확인 (최근 20줄)
+      - name: 프라이빗 서버 로그 확인
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{secrets.EC2_HOST}}
