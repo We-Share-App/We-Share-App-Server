@@ -124,10 +124,11 @@ jobs:
             
             ssh -i /tmp/private_key.pem -o StrictHostKeyChecking=no ubuntu@10.0.1.38 "\
               sudo fuser -k -n tcp 8080 || true && \
-              nohup java -jar /home/ubuntu/was/server/project.jar > /home/ubuntu/was/server/running.log 2>&1 &"
+              nohup java -jar /home/ubuntu/was/server/project.jar > /home/ubuntu/was/server/running.log 2>&1 & \
+              exit 0"
             
             rm -f /tmp/private_key.pem
-            
+
             
 
 
