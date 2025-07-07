@@ -89,11 +89,12 @@ jobs:
               nohup java -jar /home/ubuntu/was/server/project.jar > /home/ubuntu/was/server/app.log 2>&1 & \
               sleep 5 && \
               pgrep -f 'project.jar' > /dev/null"
-      
+            
             if [ $? -ne 0 ]; then
-              echo '[ERROR] JAR 실행 실패!'; exit 1;
+              echo '[ERROR] JAR 실행 실패!'
+              exit 1
             else
-              echo '[SUCCESS] JAR 실행 성공!';
+              echo '[SUCCESS] JAR 실행 성공!'
             fi
       
             echo "[INFO] 실행된 JAR 프로세스 종료 중..."
