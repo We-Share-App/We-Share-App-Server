@@ -108,7 +108,7 @@ jobs:
             chmod 600 /tmp/private_key.pem
       
             ssh -i /tmp/private_key.pem -o StrictHostKeyChecking=no ubuntu@10.0.1.38 "\
-              tail -n 20 /home/ubuntu/was/server/app.log || echo '[WARN] 로그 파일이 존재하지 않습니다.'"
+              cat /home/ubuntu/was/server/app.log || echo '[WARN] 로그 파일이 존재하지 않습니다.'"
             rm -f /tmp/private_key.pem
 
 
