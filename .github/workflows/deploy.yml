@@ -91,7 +91,7 @@ jobs:
               pgrep -f 'project.jar' > /dev/null"
             
             echo "[INFO] 8080 포트를 사용 중인 프로그램명 저장..."
-            sudo lsof -iTCP:8080 -sTCP:LISTEN -n -P | awk 'NR>1 {print $1}' | head -n 1 > /home/ubuntu/was/server/program_name.txt
+            ssh -i /tmp/private_key.pem -o StrictHostKeyChecking=no ubuntu@10.0.1.38 "\bash -c 'lsof -iTCP:8080 -sTCP:LISTEN -n -P | awk \"NR>1 {print \\$1}\" | head -n 1 > /home/ubuntu/was/server/program_name.txt'"
             
             echo "[INFO] 실행된 JAR 프로세스 종료 중..."
             ssh -i /tmp/private_key.pem -o StrictHostKeyChecking=no ubuntu@10.0.1.38 "\
