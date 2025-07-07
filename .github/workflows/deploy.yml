@@ -37,7 +37,7 @@ jobs:
           target: /home/ubuntu/was/tobe
 
       - name: SSH로 Bastion HOST에 접속하기
-        uses: appleboy/ssh-action@1.0.3
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{secrets.EC2_HOST}}
           username: ${{secrets.EC2_USERNAME}}
