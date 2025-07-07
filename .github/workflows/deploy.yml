@@ -1,0 +1,46 @@
+name: Deploy to We-Share WAS
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git-Hub develop 브랜치 파일 불러오기
+        uses: actions/checkout@v4
+
+      - name: JDK-17 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: application.yml 파일 생성하기
+        run: echo "${{secrets.APPLICATION_PROPERTIES}}" > ./src/main/resources/applicaiton.yml
+
+      - name: 테스트 및 빌드
+        run: ./gradlew clean build
+
+      - name: 빌드된 파일 이름 변경
+        run: mv ./build/libs/*SNAPSHOT.jar  ./project.jar
+
+      - name: SCP로 Bastion Host 에 빌드된 파일 전송
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USERNAME}}
+          key: ${{secrets.EC2_PRIVATE_KEY}}
+          source: project.jar
+          target: /home/ubuntu/was/tobe
+
+      - name: SSH로 Bastion HOST에 접속하기
+        uses: appleboy/ssh-action@1.0.3
+        with:
+          host: ${{secrets.EC2_HOST}}
+          username: ${{secrets.EC2_USERNAME}}
+          key: ${{secrets.EC2_PRIVATE_KEY}}
+
+
