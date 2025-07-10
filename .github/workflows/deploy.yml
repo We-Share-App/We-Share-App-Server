@@ -23,35 +23,13 @@ jobs:
           mkdir -p ./src/main/resources
           echo "${{secrets.APPLICATION_PROPERTIES}}" > ./src/main/resources/application.yml
 
-      - name: application-test.yml 생성 (H2 override)
+      - name: application-test.yml 생성
         run: |
           mkdir -p src/test/resources
-          cat << 'EOF' > src/test/resources/application-test.yml
-          spring:
-            profiles: test
-      
-            datasource:
-              driver-class-name: org.h2.Driver
-              url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
-              username: sa
-              password:
-      
-            jpa:
-              hibernate:
-                ddl-auto: create-drop
-          EOF
+          echo "${{secrets.APPLICATION_TEST_PROPERTIES}}" > ./src/test/resources/application-test.yml
 
-      # 2) gradle 설정
       - name: gradlew 실행 권한 부여
         run: chmod +x ./gradlew
-
-      - name: Debug application-test.yml
-        run: |
-          echo "▶▶▶ src/test/resources/application-test.yml ▶▶▶"
-          sed -n 'l' src/test/resources/application-test.yml
-          echo ""
-          echo "▶▶▶ 문제 리포트 ▶▶▶"
-          sed -n 'l' build/reports/problems/problems-report.html | sed -e 's/<[^>]*>//g'
 
       # 3) H2 프로파일로 테스트 실행
       - name: application-test.yml 을 통해 생성된 테스트용 jar 실행 (H2 프로파일)
