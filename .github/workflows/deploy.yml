@@ -51,6 +51,14 @@ jobs:
           SPRING_PROFILES_ACTIVE: test
         run: ./gradlew test
 
+      - name: Debug application-test.yml
+        run: |
+          echo "▶▶▶ src/test/resources/application-test.yml ▶▶▶"
+          sed -n 'l' src/test/resources/application-test.yml
+          echo ""
+          echo "▶▶▶ 문제 리포트 ▶▶▶"
+          sed -n 'l' build/reports/problems/problems-report.html | sed -e 's/<[^>]*>//g'
+
       # 4) 실제 배포용 JAR 빌드 (테스트 스킵)
       - name: application.yml 을 통한 실행 용 빌드
         run: ./gradlew clean bootJar -x test
