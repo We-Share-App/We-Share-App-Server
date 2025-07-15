@@ -48,7 +48,7 @@ public class User extends BaseTimeEntity {
         return email;
     }
 
-    public String changePhoneNumber(){
+    public String changePhoneNumber(String phoneNumber){
         this.phoneNumber = phoneNumber;
         return phoneNumber;
     }
