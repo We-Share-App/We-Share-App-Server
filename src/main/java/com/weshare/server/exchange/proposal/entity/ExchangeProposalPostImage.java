@@ -1,7 +1,6 @@
 package com.weshare.server.exchange.proposal.entity;
 
 import com.weshare.server.common.entity.BaseTimeEntity;
-import com.weshare.server.exchange.entity.ExchangePost;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
