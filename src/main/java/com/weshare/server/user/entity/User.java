@@ -28,6 +28,7 @@ public class User extends BaseTimeEntity {
     private String phoneNumber; // 사용자 전화번호
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "user_role")
     private UserRole userRole; // 사용자 구분
 
     public User(String username,String name, String email, UserRole userRole){
