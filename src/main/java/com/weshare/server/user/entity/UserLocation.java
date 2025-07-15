@@ -1,6 +1,7 @@
 package com.weshare.server.user.entity;
 
-import com.weshare.server.location.Location;
+import com.weshare.server.common.entity.BaseTimeEntity;
+import com.weshare.server.location.entity.Location;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "user_location")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class UserLocation {
+public class UserLocation extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

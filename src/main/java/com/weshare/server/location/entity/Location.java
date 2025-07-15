@@ -1,4 +1,4 @@
-package com.weshare.server.location;
+package com.weshare.server.location.entity;
 
 import com.weshare.server.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
