@@ -41,5 +41,4 @@ public class ExchangePost extends BaseTimeEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
-
 }
