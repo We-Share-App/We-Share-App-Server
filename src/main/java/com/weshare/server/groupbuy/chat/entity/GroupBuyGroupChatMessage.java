@@ -7,16 +7,17 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "group_buy_group_chat_participant")
+@Table(name = "group_buy_group_chat_message")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class GroupBuyGroupChatParticipant extends BaseTimeEntity {
+public class GroupBuyGroupChatMessage extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false)
+    private String message;
 
     @ManyToOne(fetch = FetchType.LAZY )
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,16 +26,4 @@ public class GroupBuyGroupChatParticipant extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_buy_group_chat_room_id", nullable = false)
     private GroupBuyGroupChatRoom groupBuyGroupChatRoom;
-
-    @Column(name = "joined_at", nullable = false)
-    private LocalDateTime joinedAt;
-
-    @Column(name = "last_read_at")
-    private LocalDateTime lastReadAt;
-
-    @Column(name = "left_at", nullable = false)
-    private LocalDateTime leftAt;
-
-    @Column(name = "is_active", nullable = false)
-    private Boolean isActive;
 }
