@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "group_buy_group_chat_room")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class GroupBuyChatRoom extends BaseTimeEntity {
+public class GroupBuyGroupChatRoom extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
