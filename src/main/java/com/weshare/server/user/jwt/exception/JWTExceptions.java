@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 @JsonFormat(shape = JsonFormat.Shape.OBJECT) // 필드 값을 JSON으로 변환
 public enum JWTExceptions {
+    NOT_VERIFIED_EMAIL_USER(HttpStatus.UNAUTHORIZED,"NOT_VERIFIED_EMAIL_USER-401","인증되지 않은 이메일 사용자 입니다."),
     NO_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"NO_ACCESS_TOKEN-401","액세스 토큰이 존재하지 않습니다."),
     EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"EXPIRED_ACCESS_TOKEN-401","액세스 토큰이 만료되었습니다."),
     NOT_A_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED,"NOT_ACCESS_TOKEN-401","적절한 액세스 토큰이 아닙니다."),
