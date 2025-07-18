@@ -63,6 +63,7 @@ public class ReIssueServiceImpl implements ReIssueService{
         // DB에 저장되지 않은 리프레시 토큰인 경우
         if(!refreshRepository.existsByRefresh(refresh)){
             ReIssueResponse reIssueResponse = new ReIssueResponse(HttpStatus.UNAUTHORIZED,"REFRESH-401","유효한 refreshToken 이 아닙니다.");
+            System.out.println("refresh에 담긴내용: "+refresh);
             return ResponseEntity.status(reIssueResponse.getHttpStatus()).body(reIssueResponse);
         }
 
