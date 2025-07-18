@@ -39,6 +39,11 @@ public class EmailCertificationController {
         return ResponseEntity.status(response.getHttpStatus()).body(response);
     }
 
+    @Operation(
+            summary = "이메일 인증번호 인증 요청",
+            description = "입력된 이메일에 대한 인증 번호를 전송하여, 서버로 부터 이메일 인증을 받음"
+    )
+
     @PostMapping("/verify")
     public ResponseEntity<CertificationResponse> verifyEmailCertificationKey(@RequestBody EmailVerificationRequest dto){
         log.info("[EMAIL_CERTIFICATION_KEY_VERIFY_REQUEST] email_address : {}",dto.getEmail());
