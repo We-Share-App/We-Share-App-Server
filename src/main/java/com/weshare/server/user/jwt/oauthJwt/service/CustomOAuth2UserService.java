@@ -51,6 +51,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         if (existData == null) {
 
             User user = new User(username,oAuth2Response.getName(),oAuth2Response.getEmail(),UserRole.ROLE_USER);
+            user.changeIsVerified(false); // 사용자 이메일 인증이 진행되지 않은 상태
             userRepository.save(user);
 
             UserDTO userDTO = new UserDTO();
