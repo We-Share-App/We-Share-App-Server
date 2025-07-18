@@ -1,10 +1,14 @@
 package com.weshare.server.user.jwt.handler;
 
 import com.weshare.server.user.entity.Refresh;
+import com.weshare.server.user.entity.User;
 import com.weshare.server.user.entity.UserRole;
+import com.weshare.server.user.jwt.exception.JWTException;
+import com.weshare.server.user.jwt.exception.JWTExceptions;
 import com.weshare.server.user.jwt.util.JWTUtil;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import com.weshare.server.user.repository.RefreshRepository;
+import com.weshare.server.user.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -22,20 +27,29 @@ import java.util.Iterator;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JWTUtil jwtUtil;
     private final RefreshRepository refreshRepository;
+    private final UserRepository userRepository;
 
 
     // 로그인 성공시 JWT 발급 메서드
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-
         //OAuth2User
         CustomOAuth2User customUserDetails = (CustomOAuth2User) authentication.getPrincipal();
 
         String username = customUserDetails.getUsername();
+
+        // 이메일 인증을 받지 않은 사용자는 토큰을 발급해주지 않음
+        User user = userRepository.findByUsername(username);
+        if(!user.getIsCertificated()){
+            throw new JWTException(JWTExceptions.NOT_VERIFIED_EMAIL_USER);
+        }
+
+        // 이메일 인증을 진행한 기존 사용자는 토큰을 정상적으로 발급해줌
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();

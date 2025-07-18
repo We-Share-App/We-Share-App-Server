@@ -16,7 +16,7 @@ public class User extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 20)
+    @Column(nullable = false, unique = true)
     private String username; //  서비스내에서의 사용자 이름
 
     @Column(nullable = false, length = 20)
@@ -24,6 +24,9 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false, unique = true)
     private String email; // 사용자 이메일
+
+    @Column(nullable = false,name = "is_certificated")
+    private Boolean isCertificated;
 
     private String phoneNumber; // 사용자 전화번호
 
@@ -51,5 +54,10 @@ public class User extends BaseTimeEntity {
     public String changePhoneNumber(String phoneNumber){
         this.phoneNumber = phoneNumber;
         return phoneNumber;
+    }
+
+    public Boolean changeIsVerified(Boolean isCertificated){
+        this.isCertificated = isCertificated;
+        return isCertificated;
     }
 }

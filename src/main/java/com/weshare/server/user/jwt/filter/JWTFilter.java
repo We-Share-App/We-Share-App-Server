@@ -35,6 +35,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 || path.equals("/swagger-ui/index.html")
                 || path.equals("/logout")
                 || path.equals("/reissue")
+                || path.startsWith("/user/email/certification")
                 || path.startsWith("/webjars/");
     }
 
