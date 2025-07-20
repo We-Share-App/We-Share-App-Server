@@ -1,5 +1,6 @@
 package com.weshare.server.common.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weshare.server.user.jwt.filter.CustomLogoutFilter;
 import com.weshare.server.user.jwt.handler.CustomSuccessHandler;
 import com.weshare.server.user.jwt.filter.JWTFilter;
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -60,10 +62,11 @@ public class SecurityConfig {
 
         // CustomLogoutFilter 등록
         http.addFilterAt(
-                new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
+                new CustomLogoutFilter(jwtUtil, refreshRepository, new ObjectMapper()), LogoutFilter.class);
 
         //JWTFilter 등록
-        http.addFilterAfter(jwtFilter, ExceptionTranslationFilter.class);
+        //http.addFilterAfter(jwtFilter, ExceptionTranslationFilter.class);
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         //oauth2
         http
@@ -82,7 +85,7 @@ public class SecurityConfig {
         // URL 별 권한 설정
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/v3/**","/swagger-ui/**","/logout","/reissue","/user/email/certification/**").permitAll() // 스웨거 전체 허용 (임시)
+                        .requestMatchers("/v3/**","/swagger-ui/**","/logout","/reissue","/user/email/certification/**", "/login/**", "/oauth2/authorization/**","/login/oauth2/code/**").permitAll() // 스웨거 전체 허용 (임시)
                         .anyRequest().authenticated());
 
         // CORS 설졍
