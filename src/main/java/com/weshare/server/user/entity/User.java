@@ -17,7 +17,10 @@ public class User extends BaseTimeEntity {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username; //  서비스내에서의 사용자 이름
+    private String username; //  서비스내에서의 사용자 식별이름 (고윳값)
+
+    @Column(unique = true)
+    private String nickname; // 서비스내 사용자 활동 이름
 
     @Column(nullable = false, length = 20)
     private String name; // 소셜 등록 사용자 이름
@@ -59,5 +62,10 @@ public class User extends BaseTimeEntity {
     public Boolean changeIsVerified(Boolean isCertificated){
         this.isCertificated = isCertificated;
         return isCertificated;
+    }
+
+    public String updateNickname(String nickname){
+        this.nickname = nickname;
+        return nickname;
     }
 }
