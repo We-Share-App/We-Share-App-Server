@@ -63,4 +63,9 @@ public class User extends BaseTimeEntity {
         this.isCertificated = isCertificated;
         return isCertificated;
     }
+
+    public String updateNickname(String nickname){
+        this.nickname = nickname;
+        return nickname;
+    }
 }
