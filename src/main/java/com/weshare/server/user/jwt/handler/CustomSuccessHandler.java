@@ -1,5 +1,6 @@
 package com.weshare.server.user.jwt.handler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weshare.server.user.entity.Refresh;
 import com.weshare.server.user.entity.User;
 import com.weshare.server.user.entity.UserRole;
@@ -14,6 +15,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -24,6 +27,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -46,7 +50,18 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         // 이메일 인증을 받지 않은 사용자는 토큰을 발급해주지 않음
         User user = userRepository.findByUsername(username);
         if(!user.getIsCertificated()){
-            throw new JWTException(JWTExceptions.NOT_VERIFIED_EMAIL_USER);
+            //throw new JWTException(JWTExceptions.NOT_VERIFIED_EMAIL_USER);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write(new ObjectMapper()
+                    .writeValueAsString(Map.of(
+                            "httpStatus", "UNAUTHORIZED",
+                            "code", "EMAIL-UNVERIFIED",
+                            "message", "이메일 인증이 필요합니다."
+                    ))
+            );
+            return; // 더 이상 진행하지 않고 종료
         }
 
         // 이메일 인증을 진행한 기존 사용자는 토큰을 정상적으로 발급해줌
