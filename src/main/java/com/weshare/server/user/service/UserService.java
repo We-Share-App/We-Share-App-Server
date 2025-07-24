@@ -9,4 +9,6 @@ public interface UserService {
     User findUserByAccessToken(String accessToken);
 
     User updateNickname(User user,String nickname);
+
+    User findUserByUsername(String username);
 }
