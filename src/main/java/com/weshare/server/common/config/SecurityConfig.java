@@ -85,7 +85,7 @@ public class SecurityConfig {
         // URL 별 권한 설정
         http
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/v3/**","/swagger-ui/**","/logout","/reissue","/user/email/certification/**", "/login/**", "/oauth2/authorization/**","/login/oauth2/code/**").permitAll() // 스웨거 전체 허용 (임시)
+                        .requestMatchers("/v3/**","/swagger-ui/**","/logout","/reissue","/user/email/certification/**", "/login/**", "/oauth2/authorization/**","/login/oauth2/code/**","/test/**").permitAll() // 스웨거 전체 허용 (임시)
                         .anyRequest().authenticated());
 
         // CORS 설졍

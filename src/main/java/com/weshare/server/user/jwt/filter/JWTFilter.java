@@ -50,6 +50,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // (C) 특정 prefix 로 시작하는 요청 제외
         if (path.startsWith("/v3/")
+                || path.startsWith("/test")
                 || path.startsWith("/swagger-ui/")
                 || path.equals("/swagger-ui.html")
                 || path.equals("/swagger-ui/index.html")
