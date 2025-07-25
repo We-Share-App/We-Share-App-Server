@@ -65,8 +65,8 @@ public class SecurityConfig {
                 new CustomLogoutFilter(jwtUtil, refreshRepository, new ObjectMapper()), LogoutFilter.class);
 
         //JWTFilter 등록
-        //http.addFilterAfter(jwtFilter, ExceptionTranslationFilter.class);
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(jwtFilter, ExceptionTranslationFilter.class);
+        //http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         //oauth2
         http
