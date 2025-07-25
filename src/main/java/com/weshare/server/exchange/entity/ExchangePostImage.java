@@ -2,9 +2,7 @@ package com.weshare.server.exchange.entity;
 
 import com.weshare.server.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "exchange_post_image")
@@ -21,4 +19,10 @@ public class ExchangePostImage extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exchange_post_id", nullable = false)
     private ExchangePost exchangePost;
+
+    @Builder
+    public ExchangePostImage(String exchangePostImageKey, ExchangePost exchangePost){
+        this.exchangePostImageKey = exchangePostImageKey;
+        this.exchangePost = exchangePost;
+    }
 }

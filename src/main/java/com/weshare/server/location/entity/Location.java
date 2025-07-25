@@ -23,4 +23,10 @@ public class Location extends BaseTimeEntity {
 
     @Column(name = "town_name", length = 20)
     private String townName;
+
+    public Location(String stateName, String cityName, String townName){
+        this.stateName = stateName;
+        this.cityName = cityName;
+        this.townName = townName;
+    }
 }

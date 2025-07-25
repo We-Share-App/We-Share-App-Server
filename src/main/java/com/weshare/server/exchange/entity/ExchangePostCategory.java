@@ -4,6 +4,7 @@ import com.weshare.server.category.entity.Category;
 import com.weshare.server.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,10 @@ public class ExchangePostCategory extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "exchange_post_id", nullable = false)
     private ExchangePost exchangePost;
+
+    @Builder
+    public ExchangePostCategory(Category category, ExchangePost exchangePost){
+        this.category = category;
+        this.exchangePost = exchangePost;
+    }
 }

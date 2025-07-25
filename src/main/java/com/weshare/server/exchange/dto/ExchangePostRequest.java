@@ -1,7 +1,5 @@
 package com.weshare.server.exchange.dto;
 
-import com.weshare.server.category.entity.Category;
-import com.weshare.server.exchange.ItemCondition;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -22,17 +20,19 @@ public class ExchangePostRequest {
     private String itemName;
 
     @NotNull
-    @Size(max = 250)
     private List<Long> itemCategoryIdList;
 
     @NotNull
-    private ItemCondition itemCondition;
+    private String itemCondition;
+
+    @NotBlank
+    @Size(max = 250)
+    private String itemDescription;
 
     @NotNull
-    private LocalDateTime expirationDateTime;
+    private Integer activeDuration;
 
     @NotNull
     private Long locationId;
-
 
 }
