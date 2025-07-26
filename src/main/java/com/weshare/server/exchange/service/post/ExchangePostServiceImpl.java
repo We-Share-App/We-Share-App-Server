@@ -1,6 +1,6 @@
 package com.weshare.server.exchange.service.post;
 
-import com.weshare.server.exchange.ItemCondition;
+import com.weshare.server.exchange.entity.ItemCondition;
 import com.weshare.server.exchange.dto.ExchangePostRequest;
 import com.weshare.server.exchange.entity.ExchangePost;
 import com.weshare.server.exchange.exception.post.ExchangePostException;

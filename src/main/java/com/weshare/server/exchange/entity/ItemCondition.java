@@ -1,4 +1,4 @@
-package com.weshare.server.exchange;
+package com.weshare.server.exchange.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.weshare.server.exchange.exception.item.ItemConditionException;

@@ -1,7 +1,6 @@
 package com.weshare.server.exchange.entity;
 
 import com.weshare.server.common.entity.BaseTimeEntity;
-import com.weshare.server.exchange.ItemCondition;
 import com.weshare.server.location.entity.Location;
 import com.weshare.server.user.entity.User;
 import jakarta.persistence.*;
