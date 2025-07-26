@@ -1,4 +1,4 @@
-package com.weshare.server.exchange.service;
+package com.weshare.server.exchange.service.image;
 
 import com.weshare.server.exchange.entity.ExchangePost;
 import com.weshare.server.exchange.entity.ExchangePostImage;

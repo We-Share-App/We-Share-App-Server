@@ -1,4 +1,4 @@
-package com.weshare.server.exchange.service;
+package com.weshare.server.exchange.service.post;
 
 import com.weshare.server.exchange.dto.ExchangePostRequest;
 import com.weshare.server.exchange.entity.ExchangePost;

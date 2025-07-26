@@ -1,4 +1,4 @@
-package com.weshare.server.exchange.service;
+package com.weshare.server.exchange.service.category;
 
 import com.weshare.server.category.entity.Category;
 import com.weshare.server.category.exception.CategoryException;
