@@ -83,6 +83,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         response.setHeader("access",accessToken); // 헤더의 access 필드를 통해 access 토큰 전달
         response.setHeader("is_first_login",isFirstLogin.toString());
 
+        response.addCookie(createCookie("access", accessToken));
         response.addCookie(createCookie("refresh",refreshToken)); // 쿠키의 refresh 필드를 통해 refresh 토큰 전달
         response.setStatus(HttpServletResponse.SC_OK);
 
