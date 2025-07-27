@@ -29,10 +29,7 @@ public class ExchangePostServiceImpl implements ExchangePostService{
     @Override
     public ExchangePost createExchangePost(ExchangePostRequest request, CustomOAuth2User principal) {
 
-        User user = userRepository.findByUsername(principal.getUsername());
-        if(user == null){
-            throw new UserException(UserExceptions.USER_NOT_FOUND);
-        }
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));
         Location location = locationRepository.findById(request.getLocationId()).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
         LocalDateTime expirationDateTime = LocalDateTime.now().minusHours(request.getActiveDuration());
         ItemCondition itemCondition = ItemCondition.stringToEnum(request.getItemCondition());
