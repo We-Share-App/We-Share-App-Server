@@ -8,6 +8,7 @@ import com.weshare.server.location.entity.Location;
 import com.weshare.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -45,4 +46,15 @@ public class ExchangeProposalPost extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+
+    @Builder
+    public ExchangeProposalPost(String itemName, String itemDescription, ItemCondition itemCondition, User user, ExchangePost exchangePost, Location location, Category category){
+        this.itemName = itemName;
+        this.itemDescription = itemDescription;
+        this.itemCondition = itemCondition;
+        this.user = user;
+        this.exchangePost = exchangePost;
+        this.location = location;
+        this.category = category;
+    }
 }
