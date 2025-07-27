@@ -5,6 +5,7 @@ import com.weshare.server.exchange.dto.ExchangePostRequest;
 import com.weshare.server.exchange.dto.ExchangePostResponse;
 import com.weshare.server.exchange.service.ExchangePostAggregateService;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class ExchangePostController {
     private final ExchangePostAggregateService exchangePostAggregateService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ExchangePostResponse> createExchangePost(@RequestPart("post")ExchangePostRequest request, @RequestPart("images")List<MultipartFile> images, @AuthenticationPrincipal CustomOAuth2User principal) {
+    public ResponseEntity<ExchangePostResponse> createExchangePost(@RequestPart("post") @Valid ExchangePostRequest request, @RequestPart("images")List<MultipartFile> images, @AuthenticationPrincipal CustomOAuth2User principal) {
         ExchangePostResponse response = exchangePostAggregateService.createPostWithImagesAndCategories(request, images, principal);
         return ResponseEntity.ok(response);
 
