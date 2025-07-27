@@ -28,10 +28,7 @@ public class UserCategoryServiceImpl implements UserCategoryService{
     @Override
     public List<Long> createUserCategory(List<Long> categoryIdList, CustomOAuth2User principal) {
         // 유저 찾기
-        User user = userRepository.findByUsername(principal.getUsername());
-        if(user == null){
-            throw new UserException(UserExceptions.USER_NOT_FOUND);
-        }
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));
 
         // category 찾기
         List<Category> categoryList = new ArrayList<>();
