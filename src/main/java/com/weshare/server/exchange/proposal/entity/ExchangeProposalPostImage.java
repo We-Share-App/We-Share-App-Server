@@ -3,6 +3,7 @@ package com.weshare.server.exchange.proposal.entity;
 import com.weshare.server.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,9 @@ public class ExchangeProposalPostImage extends BaseTimeEntity {
     @JoinColumn(name = "exchange_proposal_post_id", nullable = false)
     private ExchangeProposalPost exchangeProposalPost;
 
+    @Builder
+    public ExchangeProposalPostImage(String exchangeProposalPostImageKey, ExchangeProposalPost exchangeProposalPost){
+        this.exchangeProposalPostImageKey = exchangeProposalPostImageKey;
+        this.exchangeProposalPost = exchangeProposalPost;
+    }
 }
