@@ -1,5 +1,6 @@
 package com.weshare.server.user.category.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserCategoryRequest {
-    @NotNull
+    @NotEmpty
     private List<Long> categoryIdList;
 }
