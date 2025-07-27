@@ -19,11 +19,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public User findUserByAccessToken(String accessToken) {
         String username = jwtUtil.getUsername(accessToken);
-        User user = userRepository.findByUsername(username);
-
-        if(user == null){
-            throw new UserException(UserExceptions.USER_NOT_FOUND);
-        }
+        User user = userRepository.findByUsername(username).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));;
         return user;
     }
 
@@ -41,10 +37,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User findUserByUsername(String username) {
-        User user = userRepository.findByUsername(username);
-        if(user == null) {
-            throw new UserException(UserExceptions.USER_NOT_FOUND);
-        }
+        User user = userRepository.findByUsername(username).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));
         return user;
     }
 }

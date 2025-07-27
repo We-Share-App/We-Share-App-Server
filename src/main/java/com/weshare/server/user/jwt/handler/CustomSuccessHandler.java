@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weshare.server.user.entity.Refresh;
 import com.weshare.server.user.entity.User;
 import com.weshare.server.user.entity.UserRole;
+import com.weshare.server.user.exception.UserException;
+import com.weshare.server.user.exception.UserExceptions;
 import com.weshare.server.user.jwt.exception.JWTException;
 import com.weshare.server.user.jwt.exception.JWTExceptions;
 import com.weshare.server.user.jwt.util.JWTUtil;
@@ -48,7 +50,7 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         String username = customUserDetails.getUsername();
 
         // 이메일 인증을 받지 않은 사용자는 토큰을 발급해주지 않음
-        User user = userRepository.findByUsername(username);
+        User user = userRepository.findByUsername(username).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));
         if(!user.getIsCertificated()){
             //throw new JWTException(JWTExceptions.NOT_VERIFIED_EMAIL_USER);
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

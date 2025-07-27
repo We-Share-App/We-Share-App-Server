@@ -15,6 +15,8 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @Slf4j
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
@@ -48,24 +50,11 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             return null;
         }
         String username = oAuth2Response.getProvider()+" "+oAuth2Response.getProviderId();
-        User existData = userRepository.findByUsername(username);
+        Optional<User> optionalUser = userRepository.findByUsername(username);
 
-        // 기존에 DB에 저장된 회원이 아닌경우 -> DB 저장
-        if (existData == null) {
-
-            User user = new User(username,oAuth2Response.getName(),oAuth2Response.getEmail(),UserRole.ROLE_USER);
-            user.changeIsVerified(false); // 사용자 이메일 인증이 진행되지 않은 상태
-            userRepository.save(user);
-
-            UserDTO userDTO = new UserDTO();
-            userDTO.setUsername(username);
-            userDTO.setName(oAuth2Response.getName());
-            userDTO.setUserRole(UserRole.ROLE_USER);
-
-            return new CustomOAuth2User(userDTO); // OAuth2User 객체 반환
-        }
         // 기존에 DB에 저장된 회원인 경우 -> DB 업데이트
-        else {
+        if(optionalUser.isPresent()){
+            User existData = optionalUser.get();
             existData.changeEmail(oAuth2Response.getEmail());
             existData.changeName(oAuth2Response.getName());
 
@@ -75,6 +64,20 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             userDTO.setUsername(existData.getUsername());
             userDTO.setName(oAuth2Response.getName());
             userDTO.setUserRole(existData.getUserRole());
+
+            return new CustomOAuth2User(userDTO); // OAuth2User 객체 반환
+        }
+
+        // 기존에 DB에 저장된 회원이 아닌경우 -> DB 저장
+        else{
+            User user = new User(username,oAuth2Response.getName(),oAuth2Response.getEmail(),UserRole.ROLE_USER);
+            user.changeIsVerified(false); // 사용자 이메일 인증이 진행되지 않은 상태
+            userRepository.save(user);
+
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUsername(username);
+            userDTO.setName(oAuth2Response.getName());
+            userDTO.setUserRole(UserRole.ROLE_USER);
 
             return new CustomOAuth2User(userDTO); // OAuth2User 객체 반환
         }
