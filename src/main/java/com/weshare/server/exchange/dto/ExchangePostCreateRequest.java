@@ -7,13 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExchangePostRequest {
+public class ExchangePostCreateRequest {
 
     @NotBlank
     @Size(max = 50)

@@ -11,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 public class ExchangePostCategoryServiceImpl implements ExchangePostCategoryService{
@@ -25,5 +28,12 @@ public class ExchangePostCategoryServiceImpl implements ExchangePostCategoryServ
                 .exchangePost(exchangePost)
                 .build();
         return exchangePostCategoryRepository.save(exchangePostCategory);
+    }
+
+    @Override
+    public List<String> getExchangePostCategoryNameList(ExchangePost exchangePost) {
+        List<ExchangePostCategory> exchangePostCategoryList = exchangePostCategoryRepository.findAllByExchangePost(exchangePost);
+        List<String> categoryNameList = exchangePostCategoryList.stream().map(epc -> epc.getCategory().getCategoryName()).collect(Collectors.toList());
+        return categoryNameList;
     }
 }
