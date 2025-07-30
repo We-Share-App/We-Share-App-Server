@@ -71,7 +71,7 @@ public class ExchangePostAggregateService {
             ExchangePostDto exchangePostDto = ExchangePostDto.builder()
                     .id(exchangePost.getId())
                     .itemName(exchangePost.getItemName())
-                    .itemCondition(exchangePost.getItemCondition().name())
+                    .itemCondition(exchangePost.getItemCondition().getDescription())
                     .categoryName(exchangePostCategoryList)
                     .createdAt(exchangePost.getCreatedAt())
                     .likes(likes)

@@ -59,9 +59,18 @@ public class ExchangePostServiceImpl implements ExchangePostService{
     @Override
     @Transactional(readOnly = true)
     public List<ExchangePost> getFilteredExchangePost(ExchangePostFilterRequest request) {
-        // 1) lastPostId가 없으면 커서 조건을 아예 생략
+
+        // 0) itemCondition 파라미터가 있으면 즉시 파싱
+        String itenConditionString = request.getItemCondition();
+        if (itenConditionString != null && !itenConditionString.isBlank()) {
+            ItemCondition itemCondition = ItemCondition.stringToEnum(itenConditionString); //  (잘못된 값은 여기서 exception 발생)
+            request.setItemCondition(itemCondition.name()); // 소문자|| 대문자로 들어온 올바른 키워드 => 대문자로 확정 변경
+        }
+
+        // 1) lastPostId가 없거나 유효하지 않으면 커서 조건을 아예 생략
         ExchangePost lastPost = null;
-        if (request.getLastPostId() != null) {
+        Long lastPostId = request.getLastPostId();
+        if (lastPostId != null && lastPostId > 0) {
             lastPost = exchangePostRepository.findById(request.getLastPostId())
                     .orElseThrow(() ->
                             new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST)

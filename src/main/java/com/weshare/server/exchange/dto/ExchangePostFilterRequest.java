@@ -1,12 +1,10 @@
 package com.weshare.server.exchange.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.domain.Sort;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class ExchangePostFilterRequest {
     private Long locationId;
