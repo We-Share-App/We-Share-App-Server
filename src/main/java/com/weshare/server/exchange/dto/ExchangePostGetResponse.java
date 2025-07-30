@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 public class ExchangePostGetResponse {
+    private Integer totalPostCount;
     private List<ExchangePostDto> exchangePostDtoList;
     private Long lastPostId;
 }
