@@ -11,6 +11,7 @@ import jakarta.persistence.criteria.Root;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,13 @@ public class ExchangePostSpecification {
                     request.getLocationId()
             ));
 
-            // 2) 선택: 카테고리
+            // 2) 게시글이 아직 모집 기간(recruitingExpirationDate)을 지나지 않았을 것
+            predicates.add(cb.greaterThanOrEqualTo(
+                    root.get("recruitingExpirationDate"),
+                    cb.currentTimestamp()
+            ));
+
+            // 3) 선택: 카테고리
             if (request.getCategoryId() != null) {
                 predicates.add(cb.equal(
                         root.get("category").get("id"),
@@ -35,7 +42,7 @@ public class ExchangePostSpecification {
                 ));
             }
 
-            // 3) 선택: 상품 상태
+            // 4) 선택: 상품 상태
             if (request.getItemCondition() != null) {
                 predicates.add(cb.equal(
                         root.get("itemCondition"),
@@ -43,7 +50,7 @@ public class ExchangePostSpecification {
                 ));
             }
 
-            // 4) 커서 기반 페이징
+            // 5) 커서 기반 페이징
             if (lastPost != null) {
                 boolean asc = request.getSortDirection() == Sort.Direction.ASC;
 

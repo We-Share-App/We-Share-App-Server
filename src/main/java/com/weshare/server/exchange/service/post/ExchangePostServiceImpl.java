@@ -9,6 +9,8 @@ import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
 import com.weshare.server.exchange.repository.ExchangePostLikeRepository;
 import com.weshare.server.exchange.repository.ExchangePostRepository;
 import com.weshare.server.location.entity.Location;
+import com.weshare.server.location.exception.LocationException;
+import com.weshare.server.location.exception.LocationExceptions;
 import com.weshare.server.location.repository.LocationRepository;
 import com.weshare.server.user.entity.User;
 import com.weshare.server.user.exception.UserException;
@@ -39,8 +41,8 @@ public class ExchangePostServiceImpl implements ExchangePostService{
     public ExchangePost createExchangePost(ExchangePostCreateRequest request, CustomOAuth2User principal) {
 
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));
-        Location location = locationRepository.findById(request.getLocationId()).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
-        LocalDateTime expirationDateTime = LocalDateTime.now().minusHours(request.getActiveDuration());
+        Location location = locationRepository.findById(request.getLocationId()).orElseThrow(()-> new LocationException(LocationExceptions.NOT_EXIST_LOCATION_ID));
+        LocalDateTime expirationDateTime = LocalDateTime.now().plusHours(request.getActiveDuration());
         ItemCondition itemCondition = ItemCondition.stringToEnum(request.getItemCondition());
 
         ExchangePost exchangePost = ExchangePost.builder()
