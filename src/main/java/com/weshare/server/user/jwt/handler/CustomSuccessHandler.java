@@ -77,8 +77,8 @@ public class CustomSuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         GrantedAuthority auth = iterator.next();
         String role = auth.getAuthority();
 
-        String accessToken = jwtUtil.createJwt("access",username, UserRole.stringToUserRole(role) , 600000L); // Access 토큰
-        String refreshToken = jwtUtil.createJwt("refresh",username, UserRole.stringToUserRole(role),86400000L); // refresh 토큰
+        String accessToken = jwtUtil.createJwt("access",username, UserRole.stringToUserRole(role) , 7200000L); // Access 토큰 (유효시간 2시간)
+        String refreshToken = jwtUtil.createJwt("refresh",username, UserRole.stringToUserRole(role),86400000L); // refresh 토큰 (유효시간 24시간)
 
         addRefreshEntity(username,refreshToken,86400000L); // DB refresh 토큰 정보 저장
 

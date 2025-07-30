@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExchangePostResponse {
+public class ExchangePostCreateResponse {
     private Boolean isSuccess;
     private Long exchangePostId;
 }
