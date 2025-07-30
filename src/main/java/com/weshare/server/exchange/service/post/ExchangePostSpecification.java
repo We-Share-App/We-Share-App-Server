@@ -3,11 +3,9 @@ package com.weshare.server.exchange.service.post;
 
 import com.weshare.server.exchange.dto.ExchangePostFilterRequest;
 import com.weshare.server.exchange.entity.ExchangePost;
+import com.weshare.server.exchange.entity.ExchangePostCategory;
 import com.weshare.server.exchange.entity.ItemCondition;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -34,12 +32,14 @@ public class ExchangePostSpecification {
                     cb.currentTimestamp()
             ));
 
-            // 3) 선택: 카테고리
+            // 3) 카테고리 필터 (서브쿼리)
             if (request.getCategoryId() != null) {
-                predicates.add(cb.equal(
-                        root.get("category").get("id"),
-                        request.getCategoryId()
-                ));
+                Subquery<Long> sub = query.subquery(Long.class);
+                Root<ExchangePostCategory> epc = sub.from(ExchangePostCategory.class);
+                sub.select(epc.get("exchangePost").get("id"))
+                        .where(cb.equal(epc.get("category").get("id"), request.getCategoryId()));
+
+                predicates.add(root.get("id").in(sub));
             }
 
             // 4) 선택: 상품 상태
