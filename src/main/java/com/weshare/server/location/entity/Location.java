@@ -3,6 +3,7 @@ package com.weshare.server.location.entity;
 import com.weshare.server.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +25,7 @@ public class Location extends BaseTimeEntity {
     @Column(name = "town_name", length = 20)
     private String townName;
 
+    @Builder
     public Location(String stateName, String cityName, String townName){
         this.stateName = stateName;
         this.cityName = cityName;
