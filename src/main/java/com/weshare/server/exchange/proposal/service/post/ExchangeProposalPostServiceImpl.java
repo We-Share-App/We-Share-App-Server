@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ExchangeProposalPostServiceImpl implements ExchangeProposalPostService{
@@ -47,5 +49,13 @@ public class ExchangeProposalPostServiceImpl implements ExchangeProposalPostServ
                 .build();
 
         return exchangeProposalPostRepository.save(exchangeProposalPost);
+    }
+
+    @Override
+    @Transactional
+    public List<ExchangeProposalPost> getAllExchangeProposalPost(Long exchangePostId) {
+        ExchangePost exchangePost = exchangePostRepository.findById(exchangePostId).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
+        List<ExchangeProposalPost> exchangeProposalPostList = exchangeProposalPostRepository.findAllByExchangePost(exchangePost);
+        return exchangeProposalPostList;
     }
 }

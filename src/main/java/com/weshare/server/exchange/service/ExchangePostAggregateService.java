@@ -3,14 +3,11 @@ package com.weshare.server.exchange.service;
 import com.weshare.server.aws.s3.service.S3Service;
 import com.weshare.server.exchange.dto.*;
 import com.weshare.server.exchange.entity.ExchangePost;
-import com.weshare.server.exchange.entity.ExchangePostCategory;
-import com.weshare.server.exchange.entity.ExchangePostImage;
+import com.weshare.server.exchange.proposal.entity.ExchangeProposalPost;
+import com.weshare.server.exchange.proposal.service.post.ExchangeProposalPostService;
 import com.weshare.server.exchange.service.category.ExchangePostCategoryService;
 import com.weshare.server.exchange.service.image.ExchangePostImageService;
 import com.weshare.server.exchange.service.post.ExchangePostService;
-import com.weshare.server.user.entity.User;
-import com.weshare.server.user.exception.UserException;
-import com.weshare.server.user.exception.UserExceptions;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -50,7 +47,7 @@ public class ExchangePostAggregateService {
     }
 
     @Transactional
-    public List<ExchangePostDto> getPostWithImage(ExchangePostFilterRequest request,CustomOAuth2User principal){
+    public List<ExchangePostDto> getPostsWithImage(ExchangePostFilterDto request, CustomOAuth2User principal){
 
         // 포스트 엔티티 필터링 전체 조회
         List<ExchangePost> exchangePostList = exchangePostService.getFilteredExchangePost(request);
@@ -84,4 +81,30 @@ public class ExchangePostAggregateService {
         return exchangePostDtoList;
 
     }
+
+    @Transactional
+    public ExchangePostDto getOnePostWithImage(Long exchangePostId, CustomOAuth2User principal){
+        ExchangePost exchangePost = exchangePostService.findExchangePost(exchangePostId);
+        // 포스트 엔티티에 대하여 교환 희망 카테고리를 찾아와 문자열 리스트로 저장하기
+        List<String> exchangePostCategoryList = exchangePostCategoryService.getExchangePostCategoryNameList(exchangePost);
+        // 포스트 엔티티에 대하여 이미지키를 찾아와 presigned URL 획득하기
+        List<String> presignedUrlList = exchangePostImageService.getImageKey(exchangePost).stream().map(s3Service::getPresignedUrl).collect(Collectors.toList());
+        //포스트 엔티티에 대하여 좋아요 개수를 획득하기
+        Long likes = exchangePostService.getLikeCount(exchangePost);
+        Boolean isUserLiked = exchangePostService.isUserLikedPost(principal,exchangePost);
+
+        ExchangePostDto exchangePostDto = ExchangePostDto.builder()
+                .id(exchangePost.getId())
+                .itemName(exchangePost.getItemName())
+                .itemCondition(exchangePost.getItemCondition().getDescription())
+                .categoryName(exchangePostCategoryList)
+                .createdAt(exchangePost.getCreatedAt())
+                .likes(likes)
+                .imageUrlList(presignedUrlList)
+                .isUserLiked(isUserLiked)
+                .build();
+
+        return exchangePostDto;
+    }
+
 }

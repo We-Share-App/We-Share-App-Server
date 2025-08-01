@@ -6,7 +6,7 @@ import org.springframework.data.domain.Sort;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExchangePostFilterRequest {
+public class ExchangePostFilterDto {
     private Long locationId;
     private Long categoryId;
     private String itemCondition;
@@ -16,7 +16,7 @@ public class ExchangePostFilterRequest {
     private Integer size;
 
     @Builder
-    public ExchangePostFilterRequest(Long locationId,Long categoryId, String itemCondition, Long lastPostId, Sort.Direction sortDirection, Integer page, Integer size){
+    public ExchangePostFilterDto(Long locationId, Long categoryId, String itemCondition, Long lastPostId, Sort.Direction sortDirection, Integer page, Integer size){
         this.locationId = locationId;
         this.categoryId = categoryId;
         this.itemCondition = itemCondition;
