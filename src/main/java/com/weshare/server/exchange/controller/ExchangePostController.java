@@ -6,6 +6,7 @@ import com.weshare.server.exchange.exception.post.ExchangePostException;
 import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
 import com.weshare.server.exchange.proposal.service.ExchangeProposalPostAggregateService;
 import com.weshare.server.exchange.service.ExchangePostAggregateService;
+import com.weshare.server.exchange.service.view.ExchangePostViewService;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.Optional;
 public class ExchangePostController {
     private final ExchangePostAggregateService exchangePostAggregateService;
     private final ExchangeProposalPostAggregateService exchangeProposalPostAggregateService;
+    private final ExchangePostViewService exchangePostViewService;
 
     @PostMapping(value = "/posts",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ExchangePostCreateResponse> createExchangePost(@RequestPart("post") @Valid ExchangePostCreateRequest request, @RequestPart("images")List<MultipartFile> images, @AuthenticationPrincipal CustomOAuth2User principal) {
@@ -72,8 +74,11 @@ public class ExchangePostController {
 
     @GetMapping("/{exchangePostId}")
     public ResponseEntity<?> getOneExchangePost(@PathVariable Long exchangePostId,@AuthenticationPrincipal CustomOAuth2User principal){
+        // 조회수 증가 검토
+        Long viewCount = exchangePostViewService.updateViewCount(exchangePostId,principal);
         //공개 물품교환 게시글 조회
         ExchangePostDto exchangePostDto = exchangePostAggregateService.getOnePostWithImage(exchangePostId,principal);
+        exchangePostDto.updateViewCount(viewCount); // 조회수 업데이트
         // 물품교환 제안 게시글 조회
         List<ExchangeProposalPostDto> exchangeProposalPostDtoList = exchangeProposalPostAggregateService.getAllProposalList(exchangePostId);
         //응답생성
