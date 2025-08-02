@@ -1,6 +1,7 @@
 package com.weshare.server.exchange.controller;
 
 
+import com.weshare.server.exchange.candidate.dto.ExchangeCandidatePostDto;
 import com.weshare.server.exchange.dto.*;
 import com.weshare.server.exchange.exception.post.ExchangePostException;
 import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
