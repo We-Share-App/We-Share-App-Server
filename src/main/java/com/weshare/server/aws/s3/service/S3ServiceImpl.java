@@ -73,7 +73,7 @@ public class S3ServiceImpl implements S3Service {
             throw new S3Exception(S3Exceptions.IMAGE_SERIALIZE_ERROR); // 직렬화 예외 발생
         }
         // key 값 리턴
-        log.info("[s3 이미지 업로드 성공] key :{}",key);
+        //log.info("[s3 이미지 업로드 성공] key :{}",key);
         return key;
     }
 
@@ -96,7 +96,7 @@ public class S3ServiceImpl implements S3Service {
                     .build();
 
             PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
-            log.info("[s3 이미지 presigned URL 생성 성공] url :{}",presignedRequest.url().toString());
+            //log.info("[s3 이미지 presigned URL 생성 성공] url :{}",presignedRequest.url().toString());
             return presignedRequest.url().toString();
         } finally {
             presigner.close();

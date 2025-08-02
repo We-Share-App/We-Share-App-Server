@@ -74,11 +74,8 @@ public class ExchangePostController {
 
     @GetMapping("/{exchangePostId}")
     public ResponseEntity<?> getOneExchangePost(@PathVariable Long exchangePostId,@AuthenticationPrincipal CustomOAuth2User principal){
-        // 조회수 증가 검토
-        Long viewCount = exchangePostViewService.updateViewCount(exchangePostId,principal);
         //공개 물품교환 게시글 조회
         ExchangePostDto exchangePostDto = exchangePostAggregateService.getOnePostWithImage(exchangePostId,principal);
-        exchangePostDto.updateViewCount(viewCount); // 조회수 업데이트
         // 물품교환 제안 게시글 조회
         List<ExchangeProposalPostDto> exchangeProposalPostDtoList = exchangeProposalPostAggregateService.getAllProposalList(exchangePostId);
         //응답생성

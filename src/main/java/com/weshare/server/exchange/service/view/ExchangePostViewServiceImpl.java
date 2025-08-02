@@ -51,4 +51,10 @@ public class ExchangePostViewServiceImpl implements ExchangePostViewService{
             // 이미 기록됨 → 무시
         }
     }
+
+    @Override
+    public Long getViewCount(Long exchangePostId) {
+        ExchangePost exchangePost = exchangePostRepository.findById(exchangePostId).orElseThrow(()->new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
+        return exchangePostViewRepository.countByExchangePost(exchangePost);
+    }
 }

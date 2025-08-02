@@ -8,6 +8,7 @@ import com.weshare.server.exchange.proposal.service.post.ExchangeProposalPostSer
 import com.weshare.server.exchange.service.category.ExchangePostCategoryService;
 import com.weshare.server.exchange.service.image.ExchangePostImageService;
 import com.weshare.server.exchange.service.post.ExchangePostService;
+import com.weshare.server.exchange.service.view.ExchangePostViewService;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class ExchangePostAggregateService {
     private final ExchangePostService exchangePostService;
     private final ExchangePostCategoryService exchangePostCategoryService;
     private final ExchangePostImageService exchangePostImageService;
+    private final ExchangePostViewService exchangePostViewService;
     private final S3Service s3Service;
     private static final String directory = "exchange";
     @Transactional
@@ -64,6 +66,7 @@ public class ExchangePostAggregateService {
             // 각각의 포스트 엔티티에 대하여 좋아요 개수를 획득하기
             Long likes = exchangePostService.getLikeCount(exchangePost);
             Boolean isUserLiked = exchangePostService.isUserLikedPost(principal,exchangePost);
+            Long viewCount = exchangePostViewService.getViewCount(exchangePost.getId());
 
             ExchangePostDto exchangePostDto = ExchangePostDto.builder()
                     .id(exchangePost.getId())
@@ -74,6 +77,7 @@ public class ExchangePostAggregateService {
                     .likes(likes)
                     .imageUrlList(presignedUrlList)
                     .isUserLiked(isUserLiked)
+                    .viewCount(viewCount)
                     .build();
             exchangePostDtoList.add(exchangePostDto);
         }
@@ -92,6 +96,7 @@ public class ExchangePostAggregateService {
         //포스트 엔티티에 대하여 좋아요 개수를 획득하기
         Long likes = exchangePostService.getLikeCount(exchangePost);
         Boolean isUserLiked = exchangePostService.isUserLikedPost(principal,exchangePost);
+        Long viewCount = exchangePostViewService.updateViewCount(exchangePost.getId(),principal);
 
         ExchangePostDto exchangePostDto = ExchangePostDto.builder()
                 .id(exchangePost.getId())
@@ -102,6 +107,7 @@ public class ExchangePostAggregateService {
                 .likes(likes)
                 .imageUrlList(presignedUrlList)
                 .isUserLiked(isUserLiked)
+                .viewCount(viewCount)
                 .build();
 
         return exchangePostDto;
