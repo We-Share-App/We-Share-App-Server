@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserLocationRegistrationResponse {
     private Boolean isSuccess;
     private Long userLocationId;
+    private Long locationId;
 }

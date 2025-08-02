@@ -22,7 +22,7 @@ public class UserLocationController {
     @PostMapping
     public ResponseEntity<UserLocationRegistrationResponse> userLocationRegister(@RequestBody UserLocationRegistrationRequest request, @AuthenticationPrincipal CustomOAuth2User principal){
         UserLocation userLocation = userLocationService.createUserLocation(request,principal);
-        UserLocationRegistrationResponse response = new UserLocationRegistrationResponse(true, userLocation.getId());
+        UserLocationRegistrationResponse response = new UserLocationRegistrationResponse(true, userLocation.getId(),userLocation.getLocation().getId());
         return ResponseEntity.ok(response);
     }
 }
