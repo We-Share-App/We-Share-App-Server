@@ -1,0 +1,63 @@
+package com.weshare.server.exchange.candidate.service;
+
+import com.weshare.server.aws.s3.service.S3Service;
+import com.weshare.server.exchange.dto.ExchangeCandidatePostDto;
+import com.weshare.server.exchange.candidate.dto.ExchangeCandidateRequest;
+import com.weshare.server.exchange.candidate.dto.ExchangeCandidateResponse;
+import com.weshare.server.exchange.candidate.entity.ExchangeCandidatePost;
+import com.weshare.server.exchange.candidate.service.image.ExchangeCandidatePostImageService;
+import com.weshare.server.exchange.candidate.service.post.ExchangeCandidatePostService;
+import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class ExchangeCandidatePostAggregateService {
+    private final ExchangeCandidatePostService exchangeCandidatePostService;
+    private final ExchangeCandidatePostImageService exchangeCandidatePostImageService;
+    private final S3Service s3Service;
+    private static final String directory = "exchange-candidate";
+
+    @Transactional
+    public ExchangeCandidateResponse createPostWithImage(ExchangeCandidateRequest request, List<MultipartFile> images, CustomOAuth2User principal){
+        // 게시글 업로드
+        ExchangeCandidatePost post = exchangeCandidatePostService.createExchangeCandidatePost(request,principal);
+
+        //게시글 이미지 업로드 & 이미지 키 DB 저장 (exchange_candidate_post_image 테이블)
+        for(MultipartFile img : images){
+            String key = s3Service.uploadImage(directory,img);
+            exchangeCandidatePostImageService.saveImageKey(key,post);
+        }
+        return new ExchangeCandidateResponse(true, post.getId());
+    }
+
+    @Transactional
+    public List<ExchangeCandidatePostDto> getAllCandidateList(Long exchangePostId){
+
+        //게시물 데이터 리스트 객체
+        List<ExchangeCandidatePostDto> exchangeCandidatePostDtoList = new ArrayList<>();
+        //exchangePostId에 대응하는 ExchangeCandidatePost 리스트 가져오기
+        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.getAllExchangeCandidatePost(exchangePostId);
+        for(ExchangeCandidatePost exchangeCandidatePost : exchangeCandidatePostList){
+            // 각각의 엔티티에 대하여 이미지키를 찾아와 presigned URL 획득하기
+            List<String> presignedUrlList = exchangeCandidatePostImageService.getImageKey(exchangeCandidatePost).stream().map(s3Service::getPresignedUrl).collect(Collectors.toList());
+            ExchangeCandidatePostDto exchangeCandidatePostDto = ExchangeCandidatePostDto.builder()
+                    .id(exchangeCandidatePost.getId())
+                    .itemName(exchangeCandidatePost.getItemName())
+                    .itemDescription(exchangeCandidatePost.getItemDescription())
+                    .itemCondition(exchangeCandidatePost.getItemCondition().getDescription())
+                    .categoryName(exchangeCandidatePost.getCategory().getCategoryName())
+                    .imageUrlList(presignedUrlList)
+                    .build();
+            exchangeCandidatePostDtoList.add(exchangeCandidatePostDto);
+        }
+        return exchangeCandidatePostDtoList;
+    }
+}

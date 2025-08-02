@@ -3,8 +3,6 @@ package com.weshare.server.exchange.service;
 import com.weshare.server.aws.s3.service.S3Service;
 import com.weshare.server.exchange.dto.*;
 import com.weshare.server.exchange.entity.ExchangePost;
-import com.weshare.server.exchange.proposal.entity.ExchangeProposalPost;
-import com.weshare.server.exchange.proposal.service.post.ExchangeProposalPostService;
 import com.weshare.server.exchange.service.category.ExchangePostCategoryService;
 import com.weshare.server.exchange.service.image.ExchangePostImageService;
 import com.weshare.server.exchange.service.post.ExchangePostService;

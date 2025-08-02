@@ -1,4 +1,4 @@
-package com.weshare.server.exchange.proposal.dto;
+package com.weshare.server.exchange.candidate.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ExchangeProposalRequest {
+public class ExchangeCandidateRequest {
     @NotBlank
     @Size(max = 50)
     private String itemName;

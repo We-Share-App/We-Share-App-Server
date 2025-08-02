@@ -4,7 +4,7 @@ package com.weshare.server.exchange.controller;
 import com.weshare.server.exchange.dto.*;
 import com.weshare.server.exchange.exception.post.ExchangePostException;
 import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
-import com.weshare.server.exchange.proposal.service.ExchangeProposalPostAggregateService;
+import com.weshare.server.exchange.candidate.service.ExchangeCandidatePostAggregateService;
 import com.weshare.server.exchange.service.ExchangePostAggregateService;
 import com.weshare.server.exchange.service.view.ExchangePostViewService;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @RequestMapping("/exchanges")
 public class ExchangePostController {
     private final ExchangePostAggregateService exchangePostAggregateService;
-    private final ExchangeProposalPostAggregateService exchangeProposalPostAggregateService;
+    private final ExchangeCandidatePostAggregateService exchangeCandidatePostAggregateService;
     private final ExchangePostViewService exchangePostViewService;
 
     @PostMapping(value = "/posts",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -77,9 +77,9 @@ public class ExchangePostController {
         //공개 물품교환 게시글 조회
         ExchangePostDto exchangePostDto = exchangePostAggregateService.getOnePostWithImage(exchangePostId,principal);
         // 물품교환 제안 게시글 조회
-        List<ExchangeProposalPostDto> exchangeProposalPostDtoList = exchangeProposalPostAggregateService.getAllProposalList(exchangePostId);
+        List<ExchangeCandidatePostDto> exchangeCandidatePostDtoList = exchangeCandidatePostAggregateService.getAllCandidateList(exchangePostId);
         //응답생성
-        ExchangePostResponse exchangePostResponse = new ExchangePostResponse(exchangePostDto,exchangeProposalPostDtoList.size(),exchangeProposalPostDtoList);
+        ExchangePostResponse exchangePostResponse = new ExchangePostResponse(exchangePostDto, exchangeCandidatePostDtoList.size(), exchangeCandidatePostDtoList);
         return ResponseEntity.ok(exchangePostResponse);
     }
 

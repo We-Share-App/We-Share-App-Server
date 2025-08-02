@@ -8,7 +8,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @Getter
-public class ExchangeProposalPostDto {
+public class ExchangeCandidatePostDto {
     private Long id;
     private  String itemName;
     private String itemDescription;
@@ -17,7 +17,7 @@ public class ExchangeProposalPostDto {
     private List<String> imageUrlList;
 
     @Builder
-    public ExchangeProposalPostDto(Long id,String itemName, String itemDescription, String itemCondition, String categoryName, List<String> imageUrlList) {
+    public ExchangeCandidatePostDto(Long id, String itemName, String itemDescription, String itemCondition, String categoryName, List<String> imageUrlList) {
         this.id = id;
         this.itemName = itemName;
         this.itemDescription = itemDescription;
