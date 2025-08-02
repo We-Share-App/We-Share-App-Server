@@ -55,6 +55,7 @@ public class ExchangeCandidatePostAggregateService {
                     .itemCondition(exchangeCandidatePost.getItemCondition().getDescription())
                     .categoryName(exchangeCandidatePost.getCategory().getCategoryName())
                     .imageUrlList(presignedUrlList)
+                    .writerNickname(exchangeCandidatePost.getUser().getNickname())
                     .build();
             exchangeCandidatePostDtoList.add(exchangeCandidatePostDto);
         }
