@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -113,5 +114,11 @@ public class ExchangePostServiceImpl implements ExchangePostService{
     @Override
     public ExchangePost findExchangePost(Long id) {
         return exchangePostRepository.findById(id).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
+    }
+
+    @Override
+    public Boolean isPostWriter(ExchangePost exchangePost, CustomOAuth2User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
+        return Objects.equals(exchangePost.getUser().getId(), user.getId());
     }
 }

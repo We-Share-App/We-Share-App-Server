@@ -95,6 +95,7 @@ public class ExchangePostAggregateService {
         Long likes = exchangePostService.getLikeCount(exchangePost);
         Boolean isUserLiked = exchangePostService.isUserLikedPost(principal,exchangePost);
         Long viewCount = exchangePostViewService.updateViewCount(exchangePost.getId(),principal);
+        Boolean isYours = exchangePostService.isPostWriter(exchangePost,principal);
 
         ExchangePostDto exchangePostDto = ExchangePostDto.builder()
                 .id(exchangePost.getId())
@@ -106,6 +107,7 @@ public class ExchangePostAggregateService {
                 .imageUrlList(presignedUrlList)
                 .isUserLiked(isUserLiked)
                 .viewCount(viewCount)
+                .isYours(isYours)
                 .build();
 
         return exchangePostDto;
