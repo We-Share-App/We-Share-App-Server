@@ -11,6 +11,6 @@ import java.util.List;
 @Getter
 public class ExchangePostResponse {
     private ExchangePostDto exchangePostDto;
-    private Integer totalProposalPostCount;
-    private List<ExchangeProposalPostDto> exchangeProposalPostDtoList;
+    private Integer totalCandidatePostCount;
+    private List<ExchangeCandidatePostDto> exchangeCandidatePostDtoList;
 }

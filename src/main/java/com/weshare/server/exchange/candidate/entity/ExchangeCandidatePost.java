@@ -1,4 +1,4 @@
-package com.weshare.server.exchange.proposal.entity;
+package com.weshare.server.exchange.candidate.entity;
 
 import com.weshare.server.category.entity.Category;
 import com.weshare.server.common.entity.BaseTimeEntity;
@@ -13,10 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "exchange_proposal_post")
+@Table(name = "exchange_candidate_post")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ExchangeProposalPost extends BaseTimeEntity {
+public class ExchangeCandidatePost extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -48,7 +48,7 @@ public class ExchangeProposalPost extends BaseTimeEntity {
     private Category category;
 
     @Builder
-    public ExchangeProposalPost(String itemName, String itemDescription, ItemCondition itemCondition, User user, ExchangePost exchangePost, Location location, Category category){
+    public ExchangeCandidatePost(String itemName, String itemDescription, ItemCondition itemCondition, User user, ExchangePost exchangePost, Location location, Category category){
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemCondition = itemCondition;
