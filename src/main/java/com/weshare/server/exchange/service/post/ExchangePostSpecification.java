@@ -1,7 +1,7 @@
 package com.weshare.server.exchange.service.post;
 
 
-import com.weshare.server.exchange.dto.ExchangePostFilterRequest;
+import com.weshare.server.exchange.dto.ExchangePostFilterDto;
 import com.weshare.server.exchange.entity.ExchangePost;
 import com.weshare.server.exchange.entity.ExchangePostCategory;
 import com.weshare.server.exchange.entity.ItemCondition;
@@ -9,13 +9,12 @@ import jakarta.persistence.criteria.*;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExchangePostSpecification {
 
-    public static Specification<ExchangePost> buildSpec(ExchangePostFilterRequest request,
+    public static Specification<ExchangePost> buildSpec(ExchangePostFilterDto request,
                                                         ExchangePost lastPost) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();

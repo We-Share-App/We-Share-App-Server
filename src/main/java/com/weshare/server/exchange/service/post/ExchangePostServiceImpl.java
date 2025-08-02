@@ -1,6 +1,6 @@
 package com.weshare.server.exchange.service.post;
 
-import com.weshare.server.exchange.dto.ExchangePostFilterRequest;
+import com.weshare.server.exchange.dto.ExchangePostFilterDto;
 import com.weshare.server.exchange.entity.ItemCondition;
 import com.weshare.server.exchange.dto.ExchangePostCreateRequest;
 import com.weshare.server.exchange.entity.ExchangePost;
@@ -58,7 +58,7 @@ public class ExchangePostServiceImpl implements ExchangePostService{
 
     @Override
     @Transactional(readOnly = true)
-    public List<ExchangePost> getFilteredExchangePost(ExchangePostFilterRequest request) {
+    public List<ExchangePost> getFilteredExchangePost(ExchangePostFilterDto request) {
 
         // 0) itemCondition 파라미터가 있으면 즉시 파싱
         String itenConditionString = request.getItemCondition();
@@ -108,5 +108,10 @@ public class ExchangePostServiceImpl implements ExchangePostService{
     public Boolean isUserLikedPost(CustomOAuth2User principal, ExchangePost exchangePost) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));
         return exchangePostLikeRepository.existsByUserAndExchangePost(user, exchangePost);
+    }
+
+    @Override
+    public ExchangePost findExchangePost(Long id) {
+        return exchangePostRepository.findById(id).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
     }
 }

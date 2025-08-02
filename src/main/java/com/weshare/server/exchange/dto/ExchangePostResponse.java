@@ -9,8 +9,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class ExchangePostGetResponse {
-    private Integer totalPostCount;
-    private List<ExchangePostDto> exchangePostDtoList;
-    private Long lastPostId;
+public class ExchangePostResponse {
+    private ExchangePostDto exchangePostDto;
+    private Integer totalProposalPostCount;
+    private List<ExchangeProposalPostDto> exchangeProposalPostDtoList;
 }

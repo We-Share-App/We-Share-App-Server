@@ -1,6 +1,7 @@
 package com.weshare.server.exchange.proposal.service;
 
 import com.weshare.server.aws.s3.service.S3Service;
+import com.weshare.server.exchange.dto.ExchangeProposalPostDto;
 import com.weshare.server.exchange.proposal.dto.ExchangeProposalRequest;
 import com.weshare.server.exchange.proposal.dto.ExchangeProposalResponse;
 import com.weshare.server.exchange.proposal.entity.ExchangeProposalPost;
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +36,28 @@ public class ExchangeProposalPostAggregateService {
             exchangeProposalPostImageService.saveImageKey(key,post);
         }
         return new ExchangeProposalResponse(true, post.getId());
+    }
+
+    @Transactional
+    public List<ExchangeProposalPostDto> getAllProposalList(Long exchangePostId){
+
+        //게시물 데이터 리스트 객체
+        List<ExchangeProposalPostDto> exchangeProposalPostDtoList = new ArrayList<>();
+        //exchangePostId에 대응하는 ExchangeProposalPost 리스트 가져오기
+        List<ExchangeProposalPost> exchangeProposalPostList = exchangeProposalPostService.getAllExchangeProposalPost(exchangePostId);
+        for(ExchangeProposalPost exchangeProposalPost : exchangeProposalPostList){
+            // 각각의 엔티티에 대하여 이미지키를 찾아와 presigned URL 획득하기
+            List<String> presignedUrlList = exchangeProposalPostImageService.getImageKey(exchangeProposalPost).stream().map(s3Service::getPresignedUrl).collect(Collectors.toList());
+            ExchangeProposalPostDto exchangeProposalPostDto = ExchangeProposalPostDto.builder()
+                    .id(exchangeProposalPost.getId())
+                    .itemName(exchangeProposalPost.getItemName())
+                    .itemDescription(exchangeProposalPost.getItemDescription())
+                    .itemCondition(exchangeProposalPost.getItemCondition().getDescription())
+                    .categoryName(exchangeProposalPost.getCategory().getCategoryName())
+                    .imageUrlList(presignedUrlList)
+                    .build();
+            exchangeProposalPostDtoList.add(exchangeProposalPostDto);
+        }
+        return  exchangeProposalPostDtoList;
     }
 }

@@ -19,9 +19,10 @@ public class ExchangePostDto {
     private Long likes;
     private List<String> imageUrlList;
     private Boolean isUserLiked;
+    private Long viewCount;
 
     @Builder
-    public ExchangePostDto(Long id, String itemName, String itemCondition, List<String> categoryName, LocalDateTime createdAt, Long likes, List<String> imageUrlList, Boolean isUserLiked) {
+    public ExchangePostDto(Long id, String itemName, String itemCondition, List<String> categoryName, LocalDateTime createdAt, Long likes, List<String> imageUrlList, Boolean isUserLiked, Long viewCount) {
         this.id = id;
         this.itemName = itemName;
         this.itemCondition = itemCondition;
@@ -30,5 +31,11 @@ public class ExchangePostDto {
         this.likes = likes;
         this.imageUrlList = imageUrlList;
         this.isUserLiked = isUserLiked;
+        this.viewCount = viewCount;
+    }
+
+    public Long updateViewCount(Long viewCount){
+        this.viewCount = viewCount;
+        return viewCount;
     }
 }
