@@ -41,14 +41,19 @@ public class ExchangePost extends BaseTimeEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "post_status",nullable = false)
+    private PostStatus postStatus;
+
     @Builder
-    public  ExchangePost(String itemName, String itemDescription, LocalDateTime recruitingExpirationDate, ItemCondition itemCondition ,User user, Location location){
+    public  ExchangePost(String itemName, String itemDescription, LocalDateTime recruitingExpirationDate, ItemCondition itemCondition ,User user, Location location, PostStatus postStatus){
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.recruitingExpirationDate = recruitingExpirationDate;
         this.itemCondition = itemCondition;
         this.user = user;
         this.location = location;
+        this.postStatus = postStatus;
     }
 
 }
