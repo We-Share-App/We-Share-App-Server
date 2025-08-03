@@ -87,7 +87,7 @@ public class ExchangePostController {
             description = "공개 물품교환 게시글을 exchangePostId를 기준으로 찾아서, 해당 게시글과 해당 게시글에 달린 물품교환 후보 게시글을 제공함. 교환이 완료된 게시글은 응답시 postStatus 필드값이 CLOSED 임"
     )
     @GetMapping("/{exchangePostId}")
-    public ResponseEntity<?> getOneExchangePost(@PathVariable Long exchangePostId,@AuthenticationPrincipal CustomOAuth2User principal){
+    public ResponseEntity<ExchangePostResponse> getOneExchangePost(@PathVariable Long exchangePostId,@AuthenticationPrincipal CustomOAuth2User principal){
         //공개 물품교환 게시글 조회
         ExchangePostDto exchangePostDto = exchangePostAggregateService.getOnePostWithImage(exchangePostId,principal);
         // 물품교환 제안 게시글 조회
