@@ -70,6 +70,7 @@ public class ExchangePostAggregateService {
                     .id(exchangePost.getId())
                     .itemName(exchangePost.getItemName())
                     .itemCondition(exchangePost.getItemCondition().getDescription())
+                    .postStatus(exchangePost.getExchangePostStatus().name())
                     .categoryName(exchangePostCategoryList)
                     .createdAt(exchangePost.getCreatedAt())
                     .likes(likes)
@@ -95,17 +96,20 @@ public class ExchangePostAggregateService {
         Long likes = exchangePostService.getLikeCount(exchangePost);
         Boolean isUserLiked = exchangePostService.isUserLikedPost(principal,exchangePost);
         Long viewCount = exchangePostViewService.updateViewCount(exchangePost.getId(),principal);
+        Boolean isYours = exchangePostService.isPostWriter(exchangePost,principal);
 
         ExchangePostDto exchangePostDto = ExchangePostDto.builder()
                 .id(exchangePost.getId())
                 .itemName(exchangePost.getItemName())
                 .itemCondition(exchangePost.getItemCondition().getDescription())
+                .postStatus(exchangePost.getExchangePostStatus().name())
                 .categoryName(exchangePostCategoryList)
                 .createdAt(exchangePost.getCreatedAt())
                 .likes(likes)
                 .imageUrlList(presignedUrlList)
                 .isUserLiked(isUserLiked)
                 .viewCount(viewCount)
+                .isYours(isYours)
                 .build();
 
         return exchangePostDto;

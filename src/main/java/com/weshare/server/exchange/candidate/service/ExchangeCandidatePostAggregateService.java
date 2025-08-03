@@ -1,7 +1,7 @@
 package com.weshare.server.exchange.candidate.service;
 
 import com.weshare.server.aws.s3.service.S3Service;
-import com.weshare.server.exchange.dto.ExchangeCandidatePostDto;
+import com.weshare.server.exchange.candidate.dto.ExchangeCandidatePostDto;
 import com.weshare.server.exchange.candidate.dto.ExchangeCandidateRequest;
 import com.weshare.server.exchange.candidate.dto.ExchangeCandidateResponse;
 import com.weshare.server.exchange.candidate.entity.ExchangeCandidatePost;
@@ -41,7 +41,7 @@ public class ExchangeCandidatePostAggregateService {
     @Transactional
     public List<ExchangeCandidatePostDto> getAllCandidateList(Long exchangePostId){
 
-        //게시물 데이터 리스트 객체
+        //물품교환 후보 데이터 리스트 객체
         List<ExchangeCandidatePostDto> exchangeCandidatePostDtoList = new ArrayList<>();
         //exchangePostId에 대응하는 ExchangeCandidatePost 리스트 가져오기
         List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.getAllExchangeCandidatePost(exchangePostId);
@@ -55,6 +55,7 @@ public class ExchangeCandidatePostAggregateService {
                     .itemCondition(exchangeCandidatePost.getItemCondition().getDescription())
                     .categoryName(exchangeCandidatePost.getCategory().getCategoryName())
                     .imageUrlList(presignedUrlList)
+                    .writerNickname(exchangeCandidatePost.getUser().getNickname())
                     .build();
             exchangeCandidatePostDtoList.add(exchangeCandidatePostDto);
         }

@@ -1,6 +1,7 @@
 package com.weshare.server.exchange.controller;
 
 
+import com.weshare.server.exchange.candidate.dto.ExchangeCandidatePostDto;
 import com.weshare.server.exchange.dto.*;
 import com.weshare.server.exchange.exception.post.ExchangePostException;
 import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
@@ -8,6 +9,7 @@ import com.weshare.server.exchange.candidate.service.ExchangeCandidatePostAggreg
 import com.weshare.server.exchange.service.ExchangePostAggregateService;
 import com.weshare.server.exchange.service.view.ExchangePostViewService;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -28,6 +30,10 @@ public class ExchangePostController {
     private final ExchangeCandidatePostAggregateService exchangeCandidatePostAggregateService;
     private final ExchangePostViewService exchangePostViewService;
 
+    @Operation(
+            summary = "공개 물품 교환 게시글 등록 API",
+            description = "post로 게시글 정보를 images로 이미지 데이터를 받아 공개 물품 교환 게시글을 등록하는 API"
+    )
     @PostMapping(value = "/posts",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ExchangePostCreateResponse> createExchangePost(@RequestPart("post") @Valid ExchangePostCreateRequest request, @RequestPart("images")List<MultipartFile> images, @AuthenticationPrincipal CustomOAuth2User principal) {
         ExchangePostCreateResponse response = exchangePostAggregateService.createPostWithImagesAndCategories(request, images, principal);
@@ -35,6 +41,10 @@ public class ExchangePostController {
 
     }
 
+    @Operation(
+            summary = "공개 물품교환 게시글 전체 조회 API [페이징 제공]",
+            description = "쿼리 스트링을 들어온 조건에 따라 공개 물품교환 게시글을 페이징하여 제공하는 API로 두번째 페이지 부턴 lastPostId로 받은 포스트 id 이후의 게시글을 제공함"
+    )
     @GetMapping
     public ResponseEntity<ExchangePostListResponse> getExchangePosts(@RequestParam Long locationId,
                                                                      @RequestParam(required = false) Long categoryId,
@@ -72,8 +82,12 @@ public class ExchangePostController {
 
     }
 
+    @Operation(
+            summary = "공개 물품교환 게시글 단일 조회 API [공개 물품교환 게시글 + 요청된 교환 후보 게시글들]",
+            description = "공개 물품교환 게시글을 exchangePostId를 기준으로 찾아서, 해당 게시글과 해당 게시글에 달린 물품교환 후보 게시글을 제공함. 교환이 완료된 게시글은 응답시 postStatus 필드값이 CLOSED 임"
+    )
     @GetMapping("/{exchangePostId}")
-    public ResponseEntity<?> getOneExchangePost(@PathVariable Long exchangePostId,@AuthenticationPrincipal CustomOAuth2User principal){
+    public ResponseEntity<ExchangePostResponse> getOneExchangePost(@PathVariable Long exchangePostId,@AuthenticationPrincipal CustomOAuth2User principal){
         //공개 물품교환 게시글 조회
         ExchangePostDto exchangePostDto = exchangePostAggregateService.getOnePostWithImage(exchangePostId,principal);
         // 물품교환 제안 게시글 조회

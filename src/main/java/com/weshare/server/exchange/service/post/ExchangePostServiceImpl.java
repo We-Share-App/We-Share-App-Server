@@ -4,6 +4,7 @@ import com.weshare.server.exchange.dto.ExchangePostFilterDto;
 import com.weshare.server.exchange.entity.ItemCondition;
 import com.weshare.server.exchange.dto.ExchangePostCreateRequest;
 import com.weshare.server.exchange.entity.ExchangePost;
+import com.weshare.server.exchange.entity.ExchangePostStatus;
 import com.weshare.server.exchange.exception.post.ExchangePostException;
 import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
 import com.weshare.server.exchange.repository.ExchangePostLikeRepository;
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -52,6 +54,7 @@ public class ExchangePostServiceImpl implements ExchangePostService{
                 .itemCondition(itemCondition)
                 .user(user)
                 .location(location)
+                .exchangePostStatus(ExchangePostStatus.OPEN) // 포스트 상태: "활성화"
                 .build();
         return exchangePostRepository.save(exchangePost);
     }
@@ -113,5 +116,11 @@ public class ExchangePostServiceImpl implements ExchangePostService{
     @Override
     public ExchangePost findExchangePost(Long id) {
         return exchangePostRepository.findById(id).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
+    }
+
+    @Override
+    public Boolean isPostWriter(ExchangePost exchangePost, CustomOAuth2User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
+        return Objects.equals(exchangePost.getUser().getId(), user.getId());
     }
 }

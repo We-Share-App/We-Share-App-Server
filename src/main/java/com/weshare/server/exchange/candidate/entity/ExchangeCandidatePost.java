@@ -36,25 +36,21 @@ public class ExchangeCandidatePost extends BaseTimeEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exchange_post_id", nullable = false)
-    private ExchangePost exchangePost;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "location_id", nullable = false)
-    private Location location;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "exchange_candidate_status",nullable = false)
+    private ExchangeCandidateStatus exchangeCandidateStatus;
+
+
     @Builder
-    public ExchangeCandidatePost(String itemName, String itemDescription, ItemCondition itemCondition, User user, ExchangePost exchangePost, Location location, Category category){
+    public ExchangeCandidatePost(String itemName, String itemDescription, ItemCondition itemCondition, User user, Category category, ExchangeCandidateStatus exchangeCandidateStatus){
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemCondition = itemCondition;
         this.user = user;
-        this.exchangePost = exchangePost;
-        this.location = location;
         this.category = category;
+        this.exchangeCandidateStatus = exchangeCandidateStatus;
     }
 }

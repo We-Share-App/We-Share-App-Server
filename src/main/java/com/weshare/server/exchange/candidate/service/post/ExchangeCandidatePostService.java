@@ -9,4 +9,7 @@ import java.util.List;
 public interface ExchangeCandidatePostService {
     ExchangeCandidatePost createExchangeCandidatePost(ExchangeCandidateRequest request, CustomOAuth2User principal);
     List<ExchangeCandidatePost> getAllExchangeCandidatePost(Long exchangePostId);
+    ExchangeCandidatePost findByExchangeCandidateId(Long exchangeCandidateId);
+    List<ExchangeCandidatePost> findAllByExchangeCandidateId(List<Long> exchangeCandidateIdList);
+    List<ExchangeCandidatePost> getAllUserEnrolledExchangeCandidatePost(Long exchangePostId, CustomOAuth2User principal);
 }

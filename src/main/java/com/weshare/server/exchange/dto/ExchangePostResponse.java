@@ -1,5 +1,6 @@
 package com.weshare.server.exchange.dto;
 
+import com.weshare.server.exchange.candidate.dto.ExchangeCandidatePostDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
