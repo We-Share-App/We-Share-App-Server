@@ -160,6 +160,5 @@ public class ExchangeProposalAggregateService {
         ExchangeProposalResponse response = new ExchangeProposalResponse(true,exchangeProposalIdList, exchangePost.getId(), request.getExchangeCandidateIdList());
         return response;
     }
-
-
+    
 }
