@@ -41,7 +41,7 @@ public class ExchangeCandidatePostAggregateService {
     @Transactional
     public List<ExchangeCandidatePostDto> getAllCandidateList(Long exchangePostId){
 
-        //게시물 데이터 리스트 객체
+        //물품교환 후보 데이터 리스트 객체
         List<ExchangeCandidatePostDto> exchangeCandidatePostDtoList = new ArrayList<>();
         //exchangePostId에 대응하는 ExchangeCandidatePost 리스트 가져오기
         List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.getAllExchangeCandidatePost(exchangePostId);

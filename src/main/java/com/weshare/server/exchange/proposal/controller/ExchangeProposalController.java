@@ -29,7 +29,7 @@ public class ExchangeProposalController {
         // 공개 물품 교환 게시글 작성자가 원하는 카테고리 불러오기
         List<String> categoryList = exchangeProposalAggregateService.getExchangePostWishCategoryList(exchangeId);
         // 조회자가 작성해둔 물품교환 후보 게시글 불러오기
-        List<ExchangeCandidatePostDto> exchangeCandidatePostDtoList = exchangeProposalAggregateService.getAllExchangeCandidatePostDtoList(exchangeId);
+        List<ExchangeCandidatePostDto> exchangeCandidatePostDtoList = exchangeProposalAggregateService.getAllExchangeCandidatePostDtoList(exchangeId,principal);
         CandidateResponse response = CandidateResponse.builder()
                 .wishCategoryNameList(categoryList)
                 .candidateCount(exchangeCandidatePostDtoList.size())
@@ -40,12 +40,12 @@ public class ExchangeProposalController {
     }
 
     @Operation(
-            summary = "물품교환 등록 가능 후보품 조회 API",
-            description = "자신이 등록한 후보품과 해당 공개 물품교환 게시글 작성자가 선호하는 물품 카테고리 정보를 응답하는 API"
+            summary = "물품교환 신청 API",
+            description = "공개 물품교환 게시글 ID를 기준으로 물품 교환 후보품들과의 교환 요청을 보내는 API"
     )
     @PostMapping()
     public ResponseEntity<ExchangeProposalResponse> RequestItemExchange(@RequestBody ExchangeProposalRequest request, @AuthenticationPrincipal CustomOAuth2User principal){
-        ExchangeProposalResponse exchangeProposalResponse = exchangeProposalAggregateService.doProposal(request,principal);
+        ExchangeProposalResponse exchangeProposalResponse = exchangeProposalAggregateService.proposeExchange(request,principal);
         return ResponseEntity.ok(exchangeProposalResponse);
     }
 

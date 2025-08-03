@@ -11,4 +11,5 @@ public interface ExchangeCandidatePostService {
     List<ExchangeCandidatePost> getAllExchangeCandidatePost(Long exchangePostId);
     ExchangeCandidatePost findByExchangeCandidateId(Long exchangeCandidateId);
     List<ExchangeCandidatePost> findAllByExchangeCandidateId(List<Long> exchangeCandidateIdList);
+    List<ExchangeCandidatePost> getAllUserEnrolledExchangeCandidatePost(Long exchangePostId, CustomOAuth2User principal);
 }

@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "exchange_proposal")
+@Table(name = "exchange_proposal",uniqueConstraints = @UniqueConstraint(columnNames={"exchange_post_id", "exchange_candidate_post_id"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ExchangeProposal extends BaseTimeEntity{
@@ -23,7 +23,7 @@ public class ExchangeProposal extends BaseTimeEntity{
     private ExchangePost exchangePost;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "exchange_candidate_post", nullable = false)
+    @JoinColumn(name = "exchange_candidate_post_id", nullable = false)
     private ExchangeCandidatePost exchangeCandidatePost;
 
     @Enumerated(EnumType.STRING)

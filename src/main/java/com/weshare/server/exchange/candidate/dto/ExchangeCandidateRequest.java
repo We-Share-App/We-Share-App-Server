@@ -26,8 +26,5 @@ public class ExchangeCandidateRequest {
     private String itemDescription;
 
     @NotNull
-    private Long exchangePostId;
-
-    @NotNull
     private Long categoryId;
 }
