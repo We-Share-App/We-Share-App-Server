@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum PostStatus {
+public enum ExchangePostStatus {
     OPEN("교환 가능"),
     CLOSED("교환 불가능");
     private final String description;

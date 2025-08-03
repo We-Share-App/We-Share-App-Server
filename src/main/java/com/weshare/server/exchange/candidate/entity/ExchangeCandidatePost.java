@@ -4,7 +4,6 @@ import com.weshare.server.category.entity.Category;
 import com.weshare.server.common.entity.BaseTimeEntity;
 import com.weshare.server.exchange.entity.ItemCondition;
 import com.weshare.server.exchange.entity.ExchangePost;
-import com.weshare.server.exchange.proposal.entity.ProposalStatus;
 import com.weshare.server.location.entity.Location;
 import com.weshare.server.user.entity.User;
 import jakarta.persistence.*;
@@ -49,12 +48,12 @@ public class ExchangeCandidatePost extends BaseTimeEntity {
     private Category category;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "candidate_status",nullable = false)
-    private ProposalStatus proposalStatus;
+    @Column(name = "exchange_candidate_status",nullable = false)
+    private ExchangeCandidateStatus exchangeCandidateStatus;
 
 
     @Builder
-    public ExchangeCandidatePost(String itemName, String itemDescription, ItemCondition itemCondition, User user, ExchangePost exchangePost, Location location, Category category){
+    public ExchangeCandidatePost(String itemName, String itemDescription, ItemCondition itemCondition, User user, ExchangePost exchangePost, Location location, Category category, ExchangeCandidateStatus exchangeCandidateStatus){
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemCondition = itemCondition;
@@ -62,5 +61,6 @@ public class ExchangeCandidatePost extends BaseTimeEntity {
         this.exchangePost = exchangePost;
         this.location = location;
         this.category = category;
+        this.exchangeCandidateStatus = exchangeCandidateStatus;
     }
 }

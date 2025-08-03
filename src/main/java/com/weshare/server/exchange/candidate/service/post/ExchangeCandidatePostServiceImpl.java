@@ -4,6 +4,8 @@ import com.weshare.server.category.entity.Category;
 import com.weshare.server.category.exception.CategoryException;
 import com.weshare.server.category.exception.CategoryExceptions;
 import com.weshare.server.category.repository.CategoryRepository;
+import com.weshare.server.exchange.candidate.exception.ExchangeCandidatePostException;
+import com.weshare.server.exchange.candidate.exception.ExchangeCandidatePostExceptions;
 import com.weshare.server.exchange.entity.ExchangePost;
 import com.weshare.server.exchange.entity.ItemCondition;
 import com.weshare.server.exchange.exception.post.ExchangePostException;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,6 +59,23 @@ public class ExchangeCandidatePostServiceImpl implements ExchangeCandidatePostSe
     public List<ExchangeCandidatePost> getAllExchangeCandidatePost(Long exchangePostId) {
         ExchangePost exchangePost = exchangePostRepository.findById(exchangePostId).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
         List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostRepository.findAllByExchangePost(exchangePost);
+        return exchangeCandidatePostList;
+    }
+
+    @Override
+    @Transactional
+    public ExchangeCandidatePost findByExchangeCandidateId(Long exchangeCandidateId) {
+        ExchangeCandidatePost exchangeCandidatePost = exchangeCandidatePostRepository.findById(exchangeCandidateId).orElseThrow(()-> new ExchangeCandidatePostException(ExchangeCandidatePostExceptions.NOT_EXIST_EXCHANGE_CANDIDATE_POST));
+        return exchangeCandidatePost;
+    }
+
+    @Override
+    public List<ExchangeCandidatePost> findAllByExchangeCandidateId(List<Long> exchangeCandidateIdList) {
+        List<ExchangeCandidatePost> exchangeCandidatePostList = new ArrayList<>();
+        for(Long exchangeCandidateId : exchangeCandidateIdList){
+            ExchangeCandidatePost exchangeCandidatePost = exchangeCandidatePostRepository.findById(exchangeCandidateId).orElseThrow(()-> new ExchangeCandidatePostException(ExchangeCandidatePostExceptions.NOT_EXIST_EXCHANGE_CANDIDATE_POST));
+            exchangeCandidatePostList.add(exchangeCandidatePost);
+        }
         return exchangeCandidatePostList;
     }
 }

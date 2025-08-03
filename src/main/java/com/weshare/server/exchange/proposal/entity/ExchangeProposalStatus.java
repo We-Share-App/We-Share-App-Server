@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum ProposalStatus {
+public enum ExchangeProposalStatus {
     PENDING("진행중"),
     ACCEPTED("교환 완료"),
     REJECTED("교환 거절");

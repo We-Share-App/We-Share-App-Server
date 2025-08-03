@@ -3,25 +3,40 @@ package com.weshare.server.exchange.proposal.service;
 import com.weshare.server.aws.s3.service.S3Service;
 import com.weshare.server.exchange.candidate.dto.ExchangeCandidatePostDto;
 import com.weshare.server.exchange.candidate.entity.ExchangeCandidatePost;
+import com.weshare.server.exchange.candidate.entity.ExchangeCandidateStatus;
+import com.weshare.server.exchange.candidate.exception.ExchangeCandidatePostException;
+import com.weshare.server.exchange.candidate.exception.ExchangeCandidatePostExceptions;
 import com.weshare.server.exchange.candidate.service.image.ExchangeCandidatePostImageService;
 import com.weshare.server.exchange.candidate.service.post.ExchangeCandidatePostService;
 import com.weshare.server.exchange.entity.ExchangePost;
+import com.weshare.server.exchange.entity.ExchangePostStatus;
+import com.weshare.server.exchange.proposal.dto.ExchangeProposalRequest;
+import com.weshare.server.exchange.proposal.dto.ExchangeProposalResponse;
+import com.weshare.server.exchange.proposal.entity.ExchangeProposal;
+import com.weshare.server.exchange.proposal.exception.ExchangeProposalException;
+import com.weshare.server.exchange.proposal.exception.ExchangeProposalExceptions;
 import com.weshare.server.exchange.service.category.ExchangePostCategoryService;
 import com.weshare.server.exchange.service.post.ExchangePostService;
+import com.weshare.server.user.entity.User;
+import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
+import com.weshare.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ExchangeProposalAggregateService {
+    private final UserService userService;
     private final ExchangePostService exchangePostService;
     private final ExchangePostCategoryService exchangePostCategoryService;
     private final ExchangeCandidatePostService exchangeCandidatePostService;
     private final ExchangeCandidatePostImageService exchangeCandidatePostImageService;
+    private final ExchangeProposalService exchangeProposalService;
     private final S3Service s3Service;
     public List<String> getExchangePostWishCategoryList(Long exchangeId){
         ExchangePost exchangePost = exchangePostService.findExchangePost(exchangeId);
@@ -48,5 +63,36 @@ public class ExchangeProposalAggregateService {
             exchangeCandidatePostDtoList.add(exchangeCandidatePostDto);
         }
         return exchangeCandidatePostDtoList;
+    }
+
+    public ExchangeProposalResponse doProposal(ExchangeProposalRequest request, CustomOAuth2User principal){
+        User user = userService.findUserByUsername(principal.getUsername());
+        ExchangePost exchangePost = exchangePostService.findExchangePost(request.getTargetExchangePostId());
+        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(request.getExchangeCandidateIdList());
+        // 교환 요청자와 공개 교환 게시글 작성자가 동일인물인 경우
+        if(Objects.equals(user.getId(), exchangePost.getUser().getId())){
+            throw new ExchangeProposalException(ExchangeProposalExceptions.CANNOT_PROPOSE_YOURSELF);
+        }
+        // 대상 공개 물품교환 게시글 상태가 이미 CLOSED 상태인 경우
+        if(exchangePost.getExchangePostStatus() == ExchangePostStatus.CLOSED){
+            throw new ExchangeProposalException(ExchangeProposalExceptions.ALREADY_CLOSED_EXCHANGE_POST);
+        }
+
+        // 물품 거래가 불가능한 물품 교환 후보가 있는지 점검
+        for(ExchangeCandidatePost exchangeCandidatePost : exchangeCandidatePostList){
+            if(exchangeCandidatePost.getExchangeCandidateStatus() != ExchangeCandidateStatus.AVAILABLE){
+                throw new ExchangeCandidatePostException(ExchangeCandidatePostExceptions.NOT_AVAILABLE_EXCHANGE_CANDIDATE_POST);
+            }
+        }
+
+        // 교환 등록 및 교환 등록 ID 수집
+        List<Long> exchangeProposalIdList = new ArrayList<>();
+        for(ExchangeCandidatePost exchangeCandidatePost : exchangeCandidatePostList){
+            ExchangeProposal exchangeProposal = exchangeProposalService.registerExchangeProposal(exchangePost.getId(), exchangeCandidatePost.getId());
+            exchangeProposalIdList.add(exchangeProposal.getId());
+        }
+
+        ExchangeProposalResponse response = new ExchangeProposalResponse(true,exchangeProposalIdList, exchangePost.getId(), request.getExchangeCandidateIdList());
+        return response;
     }
 }

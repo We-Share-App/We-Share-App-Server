@@ -2,16 +2,15 @@ package com.weshare.server.exchange.proposal.controller;
 
 import com.weshare.server.exchange.candidate.dto.ExchangeCandidatePostDto;
 import com.weshare.server.exchange.proposal.dto.CandidateResponse;
+import com.weshare.server.exchange.proposal.dto.ExchangeProposalRequest;
+import com.weshare.server.exchange.proposal.dto.ExchangeProposalResponse;
 import com.weshare.server.exchange.proposal.service.ExchangeProposalAggregateService;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,4 +38,15 @@ public class ExchangeProposalController {
 
         return ResponseEntity.ok(response);
     }
+
+    @Operation(
+            summary = "물품교환 등록 가능 후보품 조회 API",
+            description = "자신이 등록한 후보품과 해당 공개 물품교환 게시글 작성자가 선호하는 물품 카테고리 정보를 응답하는 API"
+    )
+    @PostMapping()
+    public ResponseEntity<ExchangeProposalResponse> RequestItemExchange(@RequestBody ExchangeProposalRequest request, @AuthenticationPrincipal CustomOAuth2User principal){
+        ExchangeProposalResponse exchangeProposalResponse = exchangeProposalAggregateService.doProposal(request,principal);
+        return ResponseEntity.ok(exchangeProposalResponse);
+    }
+
 }

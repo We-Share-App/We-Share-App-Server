@@ -4,7 +4,7 @@ import com.weshare.server.exchange.dto.ExchangePostFilterDto;
 import com.weshare.server.exchange.entity.ItemCondition;
 import com.weshare.server.exchange.dto.ExchangePostCreateRequest;
 import com.weshare.server.exchange.entity.ExchangePost;
-import com.weshare.server.exchange.entity.PostStatus;
+import com.weshare.server.exchange.entity.ExchangePostStatus;
 import com.weshare.server.exchange.exception.post.ExchangePostException;
 import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
 import com.weshare.server.exchange.repository.ExchangePostLikeRepository;
@@ -54,7 +54,7 @@ public class ExchangePostServiceImpl implements ExchangePostService{
                 .itemCondition(itemCondition)
                 .user(user)
                 .location(location)
-                .postStatus(PostStatus.OPEN) // 포스트 상태: "활성화"
+                .exchangePostStatus(ExchangePostStatus.OPEN) // 포스트 상태: "활성화"
                 .build();
         return exchangePostRepository.save(exchangePost);
     }

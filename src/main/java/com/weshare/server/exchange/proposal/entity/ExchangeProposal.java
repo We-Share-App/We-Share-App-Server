@@ -28,12 +28,12 @@ public class ExchangeProposal extends BaseTimeEntity{
 
     @Enumerated(EnumType.STRING)
     @Column(name = "proposal_status",nullable = false)
-    private ProposalStatus proposalStatus;
+    private ExchangeProposalStatus exchangeProposalStatus;
 
     @Builder
-    public ExchangeProposal(ExchangePost exchangePost, ExchangeCandidatePost exchangeCandidatePost, ProposalStatus proposalStatus) {
+    public ExchangeProposal(ExchangePost exchangePost, ExchangeCandidatePost exchangeCandidatePost, ExchangeProposalStatus exchangeProposalStatus) {
         this.exchangePost = exchangePost;
         this.exchangeCandidatePost = exchangeCandidatePost;
-        this.proposalStatus = proposalStatus;
+        this.exchangeProposalStatus = exchangeProposalStatus;
     }
 }

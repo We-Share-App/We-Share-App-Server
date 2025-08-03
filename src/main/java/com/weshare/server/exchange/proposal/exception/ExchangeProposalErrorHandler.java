@@ -1,8 +1,5 @@
 package com.weshare.server.exchange.proposal.exception;
 
-import com.weshare.server.exchange.exception.post.ExchangePostErrorResponse;
-import com.weshare.server.exchange.exception.post.ExchangePostException;
-import com.weshare.server.exchange.proposal.entity.ExchangeProposal;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
