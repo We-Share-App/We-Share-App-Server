@@ -99,8 +99,7 @@ public class ExchangeCandidatePostServiceImpl implements ExchangeCandidatePostSe
     // 특정 사용자가 등록한 교환 후보 게시글 목록 조회
     public List<ExchangeCandidatePost> getAllUserEnrolledExchangeCandidatePost(Long exchangePostId, CustomOAuth2User principal) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));
-        ExchangePost exchangePost = exchangePostRepository.findById(exchangePostId).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
-        return exchangeProposalRepository.findAllCandidatePostsByPostAndCandidateOwner(exchangePost,user);
+        return exchangeCandidatePostRepository.findAllCandidatePostsByExchangeCandidateStatusAndUser(ExchangeCandidateStatus.AVAILABLE,user);
     }
 
     @Override

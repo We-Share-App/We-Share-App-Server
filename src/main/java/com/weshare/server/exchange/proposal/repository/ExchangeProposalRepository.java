@@ -1,6 +1,7 @@
 package com.weshare.server.exchange.proposal.repository;
 
 import com.weshare.server.exchange.candidate.entity.ExchangeCandidatePost;
+import com.weshare.server.exchange.candidate.entity.ExchangeCandidateStatus;
 import com.weshare.server.exchange.entity.ExchangePost;
 import com.weshare.server.exchange.proposal.entity.ExchangeProposal;
 import com.weshare.server.user.entity.User;
@@ -19,6 +20,6 @@ public interface ExchangeProposalRepository extends JpaRepository<ExchangePropos
     List<Long> findAlreadyProposedCandidatePostIds(@Param("targetExchangePostId") Long targetExchangePostId, @Param("exchangeCandidatePostIds") Collection<Long> exchangeCandidatePostIds
     );
 
-    @Query(" select proposal.exchangeCandidatePost from ExchangeProposal proposal where proposal.exchangePost = :targetExchangePost and proposal.exchangeCandidatePost.user = :requestingUser ")
-    List<ExchangeCandidatePost> findAllCandidatePostsByPostAndCandidateOwner(@Param("targetExchangePost") ExchangePost targetExchangePost, @Param("requestingUser") User requestingUser);
+//    @Query(" select proposal.exchangeCandidatePost from ExchangeProposal proposal where proposal.exchangePost = :targetExchangePost and proposal.exchangeCandidatePost.user = :requestingUser ")
+//    List<ExchangeCandidatePost> findAllCandidatePostsByPostAndCandidateOwner(@Param("targetExchangePost") ExchangePost targetExchangePost, @Param("requestingUser") User requestingUser);
 }
