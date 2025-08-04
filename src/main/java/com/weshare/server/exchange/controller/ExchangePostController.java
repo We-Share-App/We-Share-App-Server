@@ -75,7 +75,7 @@ public class ExchangePostController {
 
         // 조건에 맞는 물품교환 게시글이 존재하는 경우
         // 마지막 응답객체의 ID
-        Optional<Long> lastIdOpt = exchangePostDtoList.stream().map(ExchangePostDto::getId).reduce((first, second) -> second);
+        Optional<Long> lastIdOpt = exchangePostDtoList.stream().map(ExchangePostDto::getExchangePostId).reduce((first, second) -> second);
         Long lastId = lastIdOpt.orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST_ID));
         ExchangePostListResponse exchangePostListResponse = new ExchangePostListResponse(totalPostCount,exchangePostDtoList,lastId);
         return ResponseEntity.ok(exchangePostListResponse);

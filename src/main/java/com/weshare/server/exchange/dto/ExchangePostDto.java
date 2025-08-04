@@ -1,6 +1,5 @@
 package com.weshare.server.exchange.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class ExchangePostDto {
-    private Long id;
+    private Long exchangePostId;
     private String itemName;
     private String itemCondition;
     private String postStatus;
@@ -24,8 +23,8 @@ public class ExchangePostDto {
     private Boolean isYours;
 
     @Builder
-    public ExchangePostDto(Long id, String itemName, String itemCondition, String postStatus, List<String> categoryName, LocalDateTime createdAt, Long likes, List<String> imageUrlList, Boolean isUserLiked, Long viewCount, Boolean isYours) {
-        this.id = id;
+    public ExchangePostDto(Long exchangePostId, String itemName, String itemCondition, String postStatus, List<String> categoryName, LocalDateTime createdAt, Long likes, List<String> imageUrlList, Boolean isUserLiked, Long viewCount, Boolean isYours) {
+        this.exchangePostId = exchangePostId;
         this.itemName = itemName;
         this.itemCondition = itemCondition;
         this.postStatus = postStatus;
