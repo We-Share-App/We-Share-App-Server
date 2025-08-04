@@ -49,7 +49,7 @@ public class ExchangeCandidatePostAggregateService {
             // 각각의 엔티티에 대하여 이미지키를 찾아와 presigned URL 획득하기
             List<String> presignedUrlList = exchangeCandidatePostImageService.getImageKey(exchangeCandidatePost).stream().map(s3Service::getPresignedUrl).collect(Collectors.toList());
             ExchangeCandidatePostDto exchangeCandidatePostDto = ExchangeCandidatePostDto.builder()
-                    .id(exchangeCandidatePost.getId())
+                    .exchangeCandidatePostId(exchangeCandidatePost.getId())
                     .itemName(exchangeCandidatePost.getItemName())
                     .itemDescription(exchangeCandidatePost.getItemDescription())
                     .itemCondition(exchangeCandidatePost.getItemCondition().getDescription())
