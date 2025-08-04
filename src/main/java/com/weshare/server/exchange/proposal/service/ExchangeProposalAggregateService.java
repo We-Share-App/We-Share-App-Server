@@ -83,7 +83,7 @@ public class ExchangeProposalAggregateService {
         }
 
         // 5) 교환 후보 아이템 일괄 조회
-        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(exchangeProposalRequest.getExchangeCandidateIdList());
+        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(exchangeProposalRequest.getExchangeCandidatePostIdList());
         List<Long> exchangeCandidatePostIdList = exchangeCandidatePostList.stream().map(ExchangeCandidatePost::getId).collect(Collectors.toList());
 
         // 6) 이미 제안된 후보 아이템 ID 배치 조회
@@ -122,7 +122,7 @@ public class ExchangeProposalAggregateService {
     public ExchangeProposalResponse doProposal(ExchangeProposalRequest request, CustomOAuth2User principal){
         User user = userService.findUserByUsername(principal.getUsername());
         ExchangePost exchangePost = exchangePostService.findExchangePost(request.getTargetExchangePostId());
-        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(request.getExchangeCandidateIdList());
+        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(request.getExchangeCandidatePostIdList());
 
         // 교환 요청자와 공개 교환 게시글 작성자가 동일인물인 경우
         if(Objects.equals(user.getId(), exchangePost.getUser().getId())){
@@ -157,7 +157,7 @@ public class ExchangeProposalAggregateService {
             exchangeProposalIdList.add(exchangeProposal.getId());
         }
 
-        ExchangeProposalResponse response = new ExchangeProposalResponse(true,exchangeProposalIdList, exchangePost.getId(), request.getExchangeCandidateIdList());
+        ExchangeProposalResponse response = new ExchangeProposalResponse(true,exchangeProposalIdList, exchangePost.getId(), request.getExchangeCandidatePostIdList());
         return response;
     }
 
