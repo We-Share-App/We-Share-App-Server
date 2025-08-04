@@ -56,4 +56,9 @@ public class ExchangePost extends BaseTimeEntity {
         this.exchangePostStatus = exchangePostStatus;
     }
 
+    public ExchangePost updateExchangePostStatus(ExchangePostStatus exchangePostStatus){
+        this.exchangePostStatus = exchangePostStatus;
+        return this;
+    }
+
 }

@@ -67,7 +67,7 @@ public class ExchangePostAggregateService {
             Long viewCount = exchangePostViewService.getViewCount(exchangePost.getId());
 
             ExchangePostDto exchangePostDto = ExchangePostDto.builder()
-                    .id(exchangePost.getId())
+                    .exchangePostId(exchangePost.getId())
                     .itemName(exchangePost.getItemName())
                     .itemCondition(exchangePost.getItemCondition().getDescription())
                     .postStatus(exchangePost.getExchangePostStatus().name())
@@ -99,7 +99,7 @@ public class ExchangePostAggregateService {
         Boolean isYours = exchangePostService.isPostWriter(exchangePost,principal);
 
         ExchangePostDto exchangePostDto = ExchangePostDto.builder()
-                .id(exchangePost.getId())
+                .exchangePostId(exchangePost.getId())
                 .itemName(exchangePost.getItemName())
                 .itemCondition(exchangePost.getItemCondition().getDescription())
                 .postStatus(exchangePost.getExchangePostStatus().name())

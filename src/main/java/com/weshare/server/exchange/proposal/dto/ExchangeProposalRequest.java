@@ -11,5 +11,5 @@ import java.util.List;
 @Getter
 public class ExchangeProposalRequest {
     private Long targetExchangePostId;
-    private List<Long> exchangeCandidateIdList;
+    private List<Long> exchangeCandidatePostIdList;
 }

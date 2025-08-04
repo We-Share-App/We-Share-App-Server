@@ -114,13 +114,21 @@ public class ExchangePostServiceImpl implements ExchangePostService{
     }
 
     @Override
+    @Transactional
     public ExchangePost findExchangePost(Long id) {
         return exchangePostRepository.findById(id).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
     }
 
     @Override
+    @Transactional
     public Boolean isPostWriter(ExchangePost exchangePost, CustomOAuth2User principal) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
         return Objects.equals(exchangePost.getUser().getId(), user.getId());
+    }
+
+    @Override
+    @Transactional
+    public ExchangePost changeExchangePostStatusToClosed(ExchangePost exchangePost) {
+        return exchangePost.updateExchangePostStatus(ExchangePostStatus.CLOSED);
     }
 }

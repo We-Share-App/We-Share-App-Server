@@ -13,4 +13,6 @@ public interface ExchangeProposalService {
     Boolean isAlreadyProposedCandidate(ExchangePost exchangePost, ExchangeCandidatePost exchangeCandidatePost);
 
     List<Long>findAlreadyProposedCandidatePostIdList(Long targetExchangePostId, Collection<Long> exchangeCandidatePostIds);
+
+    ExchangeProposal changeRelatedAllProposalsStatusToAcceptedAndRejected(ExchangePost exchangePost, ExchangeCandidatePost exchangeCandidatePost);
 }

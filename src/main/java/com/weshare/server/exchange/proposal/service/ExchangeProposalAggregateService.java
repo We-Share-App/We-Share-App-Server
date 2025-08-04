@@ -10,6 +10,9 @@ import com.weshare.server.exchange.candidate.service.image.ExchangeCandidatePost
 import com.weshare.server.exchange.candidate.service.post.ExchangeCandidatePostService;
 import com.weshare.server.exchange.entity.ExchangePost;
 import com.weshare.server.exchange.entity.ExchangePostStatus;
+import com.weshare.server.exchange.exception.post.ExchangePostException;
+import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
+import com.weshare.server.exchange.proposal.dto.ExchangeAcceptanceResponse;
 import com.weshare.server.exchange.proposal.dto.ExchangeProposalRequest;
 import com.weshare.server.exchange.proposal.dto.ExchangeProposalResponse;
 import com.weshare.server.exchange.proposal.entity.ExchangeProposal;
@@ -51,7 +54,7 @@ public class ExchangeProposalAggregateService {
             // 각각의 엔티티에 대하여 이미지키를 찾아와 presigned URL 획득하기
             List<String> presignedUrlList = exchangeCandidatePostImageService.getImageKey(exchangeCandidatePost).stream().map(s3Service::getPresignedUrl).collect(Collectors.toList());
             ExchangeCandidatePostDto exchangeCandidatePostDto = ExchangeCandidatePostDto.builder()
-                    .id(exchangeCandidatePost.getId())
+                    .exchangeCandidatePostId(exchangeCandidatePost.getId())
                     .itemName(exchangeCandidatePost.getItemName())
                     .itemDescription(exchangeCandidatePost.getItemDescription())
                     .itemCondition(exchangeCandidatePost.getItemCondition().getDescription())
@@ -83,7 +86,7 @@ public class ExchangeProposalAggregateService {
         }
 
         // 5) 교환 후보 아이템 일괄 조회
-        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(exchangeProposalRequest.getExchangeCandidateIdList());
+        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(exchangeProposalRequest.getExchangeCandidatePostIdList());
         List<Long> exchangeCandidatePostIdList = exchangeCandidatePostList.stream().map(ExchangeCandidatePost::getId).collect(Collectors.toList());
 
         // 6) 이미 제안된 후보 아이템 ID 배치 조회
@@ -118,11 +121,53 @@ public class ExchangeProposalAggregateService {
         return new ExchangeProposalResponse(true, createdExchangeProposalIdList, exchangePost.getId(), exchangeCandidatePostIdList);
     }
 
+    public ExchangeAcceptanceResponse acceptExchange(Long exchangePostId, Long exchangeCandidatePostId, CustomOAuth2User principal){
+        ExchangePost exchangePost = exchangePostService.findExchangePost(exchangePostId);
+        User user = userService.findUserByUsername(principal.getUsername());
+
+        // 공개 물품교환 게시글이 아직 교환 수락이 가능한 게시글인지 확인
+        if(exchangePost.getExchangePostStatus() != ExchangePostStatus.OPEN){
+            throw new ExchangePostException(ExchangePostExceptions.NOT_OPENED_EXCHANGE_POST);
+        }
+
+        //공개 물품 교환 게시글 작성자와 교환 요청 수락자가 동일인인지 확인함
+        if(!Objects.equals(user.getId(), exchangePost.getUser().getId())){
+            throw new ExchangeProposalException(ExchangeProposalExceptions.NOT_A_EXCHANGE_POST_WRITER);
+        }
+
+        // 물품 교환 신청 내역 조회하기
+        ExchangeCandidatePost exchangeCandidatePost = exchangeCandidatePostService.findByExchangeCandidateId(exchangeCandidatePostId);
+        // 후보품이 교환이 가능한 상태인지 확인하기
+        if(exchangeCandidatePost.getExchangeCandidateStatus() != ExchangeCandidateStatus.AVAILABLE){
+            throw new ExchangeCandidatePostException(ExchangeCandidatePostExceptions.NOT_AVAILABLE_EXCHANGE_CANDIDATE_POST);
+        }
+
+        // 물품교환 후보품 상태 TRADED로 변경하기
+        exchangeCandidatePostService.changeCandidateStatusToClosed(exchangeCandidatePost);
+        // 공개 물품교환 게시글 상태 CLOSED로 변경하기
+        exchangePostService.changeExchangePostStatusToClosed(exchangePost);
+        // 거래가 성사된 exchangePost 와 ExchangeCandidatePost 가 담긴 ExchangeProposal 인스턴스의 상태 ACCEPTED로 변경하기
+        //그외의 거래가 성사되지 못한 exchangePost 와 ExchangeCandidatePost 가 담긴 ExchangeProposal 인스턴스의 상태 REJECTED로 변경하기
+        ExchangeProposal exchangeProposal = exchangeProposalService.changeRelatedAllProposalsStatusToAcceptedAndRejected(exchangePost,exchangeCandidatePost);
+
+        ExchangeAcceptanceResponse response = ExchangeAcceptanceResponse.builder()
+                .updatedExchangePostId(exchangePost.getId())
+                .updatedExchangePostStatus(exchangePost.getExchangePostStatus().name())
+                .updatedExchangeCandidatePostId(exchangeCandidatePost.getId())
+                .updatedExchangeCandidatePostStatus(exchangeCandidatePost.getExchangeCandidateStatus().name())
+                .updatedExchangeProposalId(exchangeProposal.getId())
+                .updatedExchangeProposalStatus(exchangeProposal.getExchangeProposalStatus().name())
+                .build();
+
+        return response;
+    }
+
+
 
     public ExchangeProposalResponse doProposal(ExchangeProposalRequest request, CustomOAuth2User principal){
         User user = userService.findUserByUsername(principal.getUsername());
         ExchangePost exchangePost = exchangePostService.findExchangePost(request.getTargetExchangePostId());
-        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(request.getExchangeCandidateIdList());
+        List<ExchangeCandidatePost> exchangeCandidatePostList = exchangeCandidatePostService.findAllByExchangeCandidateId(request.getExchangeCandidatePostIdList());
 
         // 교환 요청자와 공개 교환 게시글 작성자가 동일인물인 경우
         if(Objects.equals(user.getId(), exchangePost.getUser().getId())){
@@ -157,8 +202,8 @@ public class ExchangeProposalAggregateService {
             exchangeProposalIdList.add(exchangeProposal.getId());
         }
 
-        ExchangeProposalResponse response = new ExchangeProposalResponse(true,exchangeProposalIdList, exchangePost.getId(), request.getExchangeCandidateIdList());
+        ExchangeProposalResponse response = new ExchangeProposalResponse(true,exchangeProposalIdList, exchangePost.getId(), request.getExchangeCandidatePostIdList());
         return response;
     }
-    
+
 }
