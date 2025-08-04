@@ -12,4 +12,6 @@ public interface ExchangeCandidatePostService {
     ExchangeCandidatePost findByExchangeCandidateId(Long exchangeCandidateId);
     List<ExchangeCandidatePost> findAllByExchangeCandidateId(List<Long> exchangeCandidateIdList);
     List<ExchangeCandidatePost> getAllUserEnrolledExchangeCandidatePost(Long exchangePostId, CustomOAuth2User principal);
+
+    ExchangeCandidatePost changeCandidateStatusToClosed(ExchangeCandidatePost exchangeCandidatePost);
 }

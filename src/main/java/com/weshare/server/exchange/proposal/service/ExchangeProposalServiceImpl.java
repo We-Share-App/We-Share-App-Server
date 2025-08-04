@@ -9,6 +9,8 @@ import com.weshare.server.exchange.exception.post.ExchangePostException;
 import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
 import com.weshare.server.exchange.proposal.entity.ExchangeProposal;
 import com.weshare.server.exchange.proposal.entity.ExchangeProposalStatus;
+import com.weshare.server.exchange.proposal.exception.ExchangeProposalException;
+import com.weshare.server.exchange.proposal.exception.ExchangeProposalExceptions;
 import com.weshare.server.exchange.proposal.repository.ExchangeProposalRepository;
 import com.weshare.server.exchange.repository.ExchangePostRepository;
 import com.weshare.server.user.entity.User;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -43,12 +46,37 @@ public class ExchangeProposalServiceImpl implements ExchangeProposalService{
     }
 
     @Override
+    @Transactional
     public Boolean isAlreadyProposedCandidate(ExchangePost exchangePost, ExchangeCandidatePost exchangeCandidatePost) {
         return exchangeProposalRepository.existsByExchangePostIdAndExchangeCandidatePostId(exchangePost.getId(),exchangeCandidatePost.getId());
     }
 
     @Override
+    @Transactional
     public List<Long> findAlreadyProposedCandidatePostIdList(Long targetExchangePostId, Collection<Long> exchangeCandidatePostIds) {
         return exchangeProposalRepository.findAlreadyProposedCandidatePostIds(targetExchangePostId,exchangeCandidatePostIds);
+    }
+
+    @Override
+    @Transactional
+    public ExchangeProposal changeRelatedAllProposalsStatusToAcceptedAndRejected(ExchangePost exchangePost, ExchangeCandidatePost targetExchangeCandidatePost) {
+        List<ExchangeProposal>exchangeProposalList = exchangeProposalRepository.findAllByExchangePost(exchangePost);
+        ExchangeProposal accpetedExchangeProposal = null;
+        for(ExchangeProposal exchangeProposal : exchangeProposalList){
+            //교환이 수락된 물품이 담긴 ExchangeProposal 인스턴스인 경우
+            if(Objects.equals(exchangeProposal.getExchangeCandidatePost().getId(), targetExchangeCandidatePost.getId())){
+                exchangeProposal.updateExchangeProposalStatus(ExchangeProposalStatus.ACCEPTED);
+                accpetedExchangeProposal = exchangeProposal;
+            }
+            // 교환이 수락된 물품이 아닌 나머지 물품인 경우
+            else{
+                exchangeProposal.updateExchangeProposalStatus(ExchangeProposalStatus.REJECTED);
+            }
+        }
+
+        if(accpetedExchangeProposal==null){
+            throw new ExchangeProposalException(ExchangeProposalExceptions.FAILURE_FOR_ACCEPT_EXCHANGE_TARGET_SEARCH);
+        }
+        return accpetedExchangeProposal;
     }
 }

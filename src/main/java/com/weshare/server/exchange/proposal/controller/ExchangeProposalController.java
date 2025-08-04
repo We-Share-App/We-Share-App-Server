@@ -2,6 +2,7 @@ package com.weshare.server.exchange.proposal.controller;
 
 import com.weshare.server.exchange.candidate.dto.ExchangeCandidatePostDto;
 import com.weshare.server.exchange.proposal.dto.CandidateResponse;
+import com.weshare.server.exchange.proposal.dto.ExchangeAcceptanceResponse;
 import com.weshare.server.exchange.proposal.dto.ExchangeProposalRequest;
 import com.weshare.server.exchange.proposal.dto.ExchangeProposalResponse;
 import com.weshare.server.exchange.proposal.service.ExchangeProposalAggregateService;
@@ -49,6 +50,14 @@ public class ExchangeProposalController {
         return ResponseEntity.ok(exchangeProposalResponse);
     }
 
-
+    @Operation(
+            summary = "물품교환 승인 API",
+            description = "공개 물품교환 게시글 ID와 후보 교환품 ID를 기준으로 공개 물품교환 게시글가 교환을 승인하는 API"
+    )
+    @GetMapping("/acceptances")
+    public ResponseEntity<ExchangeAcceptanceResponse> acceptExchange(@RequestParam("exchangePostId")Long exchangePostId, @RequestParam("exchangeCandidatePostId")Long exchangeCandidatePostId, @AuthenticationPrincipal CustomOAuth2User principal){
+        ExchangeAcceptanceResponse response =exchangeProposalAggregateService.acceptExchange(exchangePostId,exchangeCandidatePostId,principal);
+        return ResponseEntity.ok(response);
+    }
 
 }

@@ -53,4 +53,9 @@ public class ExchangeCandidatePost extends BaseTimeEntity {
         this.category = category;
         this.exchangeCandidateStatus = exchangeCandidateStatus;
     }
+
+    public ExchangeCandidatePost updateExchangeCandidateStatus(ExchangeCandidateStatus exchangeCandidateStatus){
+        this.exchangeCandidateStatus = exchangeCandidateStatus;
+        return this;
+    }
 }

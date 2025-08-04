@@ -14,4 +14,5 @@ public interface ExchangePostService {
     Long getLikeCount(ExchangePost exchangePost);
     Boolean isUserLikedPost(CustomOAuth2User principal, ExchangePost exchangePost);
     Boolean isPostWriter(ExchangePost exchangePost,CustomOAuth2User principal);
+    ExchangePost changeExchangePostStatusToClosed(ExchangePost exchangePost);
 }

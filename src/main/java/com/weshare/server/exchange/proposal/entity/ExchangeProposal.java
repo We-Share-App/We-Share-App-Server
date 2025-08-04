@@ -36,4 +36,10 @@ public class ExchangeProposal extends BaseTimeEntity{
         this.exchangeCandidatePost = exchangeCandidatePost;
         this.exchangeProposalStatus = exchangeProposalStatus;
     }
+
+    public ExchangeProposal updateExchangeProposalStatus(ExchangeProposalStatus exchangeProposalStatus){
+        this.exchangeProposalStatus = exchangeProposalStatus;
+        return this;
+    }
+
 }

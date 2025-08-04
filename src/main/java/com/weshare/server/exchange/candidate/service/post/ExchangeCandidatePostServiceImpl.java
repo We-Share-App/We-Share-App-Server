@@ -102,4 +102,11 @@ public class ExchangeCandidatePostServiceImpl implements ExchangeCandidatePostSe
         ExchangePost exchangePost = exchangePostRepository.findById(exchangePostId).orElseThrow(()-> new ExchangePostException(ExchangePostExceptions.NOT_EXIST_EXCHANGE_POST));
         return exchangeProposalRepository.findAllCandidatePostsByPostAndCandidateOwner(exchangePost,user);
     }
+
+    @Override
+    @Transactional
+    //해당 후보품의 상태를 TRADED 로 변경
+    public ExchangeCandidatePost changeCandidateStatusToClosed(ExchangeCandidatePost exchangeCandidatePost) {
+        return exchangeCandidatePost.updateExchangeCandidateStatus(ExchangeCandidateStatus.TRADED);
+    }
 }
