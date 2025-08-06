@@ -3,6 +3,7 @@ package com.weshare.server.groupbuy.entity;
 import com.weshare.server.common.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,4 +22,10 @@ public class GroupBuyPostImage extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_buy_post_id", nullable = false)
     private GroupBuyPost groupBuyPost;
+
+    @Builder
+    public GroupBuyPostImage(String groupBuyPostImageKey, GroupBuyPost groupBuyPost) {
+        this.groupBuyPostImageKey = groupBuyPostImageKey;
+        this.groupBuyPost = groupBuyPost;
+    }
 }
