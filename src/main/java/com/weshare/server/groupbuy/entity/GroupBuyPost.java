@@ -7,6 +7,7 @@ import com.weshare.server.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -56,4 +57,17 @@ public class GroupBuyPost extends BaseTimeEntity {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @Builder
+    public GroupBuyPost(String itemName, String itemDescription, String itemUrl, Integer itemQuantity, Integer itemPrice, Integer shippingFee, LocalDateTime recruitingExpirationDate, User user, Category category, Location location) {
+        this.itemName = itemName;
+        this.itemDescription = itemDescription;
+        this.itemUrl = itemUrl;
+        this.itemQuantity = itemQuantity;
+        this.itemPrice = itemPrice;
+        this.shippingFee = shippingFee;
+        this.recruitingExpirationDate = recruitingExpirationDate;
+        this.user = user;
+        this.category = category;
+        this.location = location;
+    }
 }
