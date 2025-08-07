@@ -39,6 +39,9 @@ public class GroupBuyPost extends BaseTimeEntity {
     @Column(name = "item_price", nullable = false)
     private Integer itemPrice;
 
+    @Column(name = "remain_quantity",nullable = false)
+    private Integer remainQuantity;
+
     @Column(name = "shipping_fee",nullable = false)
     private Integer shippingFee;
 
@@ -58,16 +61,22 @@ public class GroupBuyPost extends BaseTimeEntity {
     private Location location;
 
     @Builder
-    public GroupBuyPost(String itemName, String itemDescription, String itemUrl, Integer itemQuantity, Integer itemPrice, Integer shippingFee, LocalDateTime recruitingExpirationDate, User user, Category category, Location location) {
+    public GroupBuyPost(String itemName, String itemDescription, String itemUrl, Integer itemQuantity, Integer remainQuantity ,Integer itemPrice, Integer shippingFee, LocalDateTime recruitingExpirationDate, User user, Category category, Location location) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemUrl = itemUrl;
         this.itemQuantity = itemQuantity;
+        this.remainQuantity = remainQuantity;
         this.itemPrice = itemPrice;
         this.shippingFee = shippingFee;
         this.recruitingExpirationDate = recruitingExpirationDate;
         this.user = user;
         this.category = category;
         this.location = location;
+    }
+
+    public GroupBuyPost updateRemainQuantity(Integer remainQuantity){
+        this.remainQuantity = remainQuantity;
+        return this;
     }
 }

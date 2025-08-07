@@ -8,11 +8,14 @@ import com.weshare.server.groupbuy.dto.GroupBuyPostCreateRequest;
 import com.weshare.server.groupbuy.entity.GroupBuyPost;
 import com.weshare.server.groupbuy.exception.GroupBuyPostException;
 import com.weshare.server.groupbuy.exception.GroupBuyPostExceptions;
+import com.weshare.server.groupbuy.repository.GroupBuyParticipantRepository;
+import com.weshare.server.groupbuy.repository.GroupBuyPostLikeRepository;
 import com.weshare.server.groupbuy.repository.GroupBuyPostRepository;
 import com.weshare.server.location.entity.Location;
 import com.weshare.server.location.exception.LocationException;
 import com.weshare.server.location.exception.LocationExceptions;
 import com.weshare.server.location.repository.LocationRepository;
+import com.weshare.server.payment.PaymentStatus;
 import com.weshare.server.user.entity.User;
 import com.weshare.server.user.exception.UserException;
 import com.weshare.server.user.exception.UserExceptions;
@@ -23,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +36,8 @@ public class GroupBuyPostServiceImpl implements GroupBuyPostService{
     private final LocationRepository locationRepository;
     private final CategoryRepository categoryRepository;
     private final GroupBuyPostRepository groupBuyPostRepository;
+    private final GroupBuyParticipantRepository groupBuyParticipantRepository;
+    private final GroupBuyPostLikeRepository groupBuyPostLikeRepository;
 
     @Override
     @Transactional
@@ -51,6 +58,7 @@ public class GroupBuyPostServiceImpl implements GroupBuyPostService{
                 .itemUrl(request.getItemURL())
                 .itemQuantity(request.getTotalQuantity())
                 .itemPrice(request.getItemPrice())
+                .remainQuantity(request.getTotalQuantity())
                 .shippingFee(request.getShippingFee())
                 .recruitingExpirationDate(GroupBuyPostCreateRequest.dateToDateTimeWithEndOfDayTime(request.getExpirationDate()))
                 .user(user)
@@ -59,5 +67,40 @@ public class GroupBuyPostServiceImpl implements GroupBuyPostService{
                 .build();
 
         return groupBuyPostRepository.save(groupBuyPost);
+    }
+
+    @Override
+    @Transactional
+    public GroupBuyPost updateRemainQuantity(GroupBuyPost groupBuyPost, List<PaymentStatus> paymentStatusList) {
+        Long groupBuyPostId = groupBuyPost.getId();
+        Integer orderCount = groupBuyParticipantRepository.sumQuantityByPostIdAndStatuses(groupBuyPostId,paymentStatusList);
+        groupBuyPost.updateRemainQuantity(groupBuyPost.getItemQuantity()-orderCount);
+        return groupBuyPost;
+    }
+
+    @Override
+    @Transactional
+    public GroupBuyPost findPostById(Long id) {
+        GroupBuyPost groupBuyPost = groupBuyPostRepository.findById(id).orElseThrow(()-> new GroupBuyPostException(GroupBuyPostExceptions.NOT_EXIST_GROUP_POST));
+        return groupBuyPost;
+    }
+
+    @Override
+    @Transactional
+    public Long getLikeCount(GroupBuyPost groupBuyPost) {
+        return groupBuyPostLikeRepository.countByGroupBuyPost(groupBuyPost);
+    }
+
+    @Override
+    public Boolean isUserLikedPost(GroupBuyPost groupBuyPost, CustomOAuth2User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
+        return groupBuyPostLikeRepository.existsByUserAndGroupBuyPost(user, groupBuyPost);
+    }
+
+    @Override
+    public Boolean isPostWriter(GroupBuyPost groupBuyPost, CustomOAuth2User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
+        return Objects.equals(groupBuyPost.getUser().getId(),user.getId());
+
     }
 }
