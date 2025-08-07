@@ -4,6 +4,7 @@ import com.weshare.server.aws.s3.service.S3Service;
 import com.weshare.server.groupbuy.dto.GroupBuyPostCreateRequest;
 import com.weshare.server.groupbuy.dto.GroupBuyPostCreateResponse;
 import com.weshare.server.groupbuy.dto.GroupBuyPostDto;
+import com.weshare.server.groupbuy.dto.GroupBuyPostFilterDto;
 import com.weshare.server.groupbuy.entity.GroupBuyParticipant;
 import com.weshare.server.groupbuy.entity.GroupBuyPost;
 import com.weshare.server.groupbuy.service.image.GroupBuyPostImageService;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,5 +83,42 @@ public class GroupBuyAggregateService {
                 .userNickname(groupBuyPost.getUser().getNickname())
                 .build();
         return groupBuyPostDto;
+    }
+
+    @Transactional
+    public List<GroupBuyPostDto> getPostsWithImage(GroupBuyPostFilterDto request, CustomOAuth2User principal){
+        // 포스트 엔티티 필터링 전체 조회
+        List<GroupBuyPost> groupBuyPostList = groupBuyPostService.getFilteredGroupBuyPost(request);
+
+        //게시물 데이터 리스트 객체
+        List<GroupBuyPostDto> groupBuyPostDtoList = new ArrayList<>();
+
+        for(GroupBuyPost groupBuyPost : groupBuyPostList){
+            // 각각의 포스트 엔티티에 대하여 카테고리명을 가져옴
+            String categoryName = groupBuyPost.getCategory().getCategoryName();
+            // 각각의 포스트 엔티티에 대하여 이미지키를 찾아와 presigned URL 획득하기
+            List<String> presignedUrlList = groupBuyPostImageService.getImageKey(groupBuyPost).stream().map(s3Service::getPresignedUrl).collect(Collectors.toList());
+            Long likes = groupBuyPostService.getLikeCount(groupBuyPost);
+            Boolean isUserLiked = groupBuyPostService.isUserLikedPost(groupBuyPost,principal);
+            Long viewCount = groupBuyPostViewService.getViewCount(groupBuyPost.getId());
+            Integer participants = groupBuyPostService.countParticipants(groupBuyPost);
+
+            GroupBuyPostDto groupBuyPostDto = GroupBuyPostDto.builder()
+                    .groupBuyPostId(groupBuyPost.getId())
+                    .itemName(groupBuyPost.getItemName())
+                    .imageUrlList(presignedUrlList)
+                    .categoryName(categoryName)
+                    .totalQuantity(groupBuyPost.getItemQuantity())
+                    .remainQuantity(groupBuyPost.getRemainQuantity())
+                    .expirationDateTime(groupBuyPost.getRecruitingExpirationDate())
+                    .likes(likes)
+                    .viewCount(viewCount)
+                    .isUserLiked(isUserLiked)
+                    .participantCount(participants)
+                    .build();
+            groupBuyPostDtoList.add(groupBuyPostDto);
+        }
+
+        return  groupBuyPostDtoList;
     }
 }

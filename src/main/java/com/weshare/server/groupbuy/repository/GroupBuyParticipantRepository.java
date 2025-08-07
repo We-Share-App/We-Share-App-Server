@@ -1,11 +1,13 @@
 package com.weshare.server.groupbuy.repository;
 
 import com.weshare.server.groupbuy.entity.GroupBuyParticipant;
+import com.weshare.server.groupbuy.entity.GroupBuyPost;
 import com.weshare.server.payment.PaymentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface GroupBuyParticipantRepository extends JpaRepository<GroupBuyParticipant,Long> {
@@ -19,4 +21,6 @@ public interface GroupBuyParticipantRepository extends JpaRepository<GroupBuyPar
             @Param("postId") Long postId,
             @Param("statuses") List<PaymentStatus> statuses
     );
+
+    Integer countByGroupBuyPostAndPaymentStatusIn(GroupBuyPost groupBuyPost, Collection<PaymentStatus> statuses);
 }

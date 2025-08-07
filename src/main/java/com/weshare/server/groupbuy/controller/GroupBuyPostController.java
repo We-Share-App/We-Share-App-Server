@@ -1,10 +1,9 @@
 package com.weshare.server.groupbuy.controller;
 
-import com.weshare.server.groupbuy.dto.GroupBuyPostCreateRequest;
-import com.weshare.server.groupbuy.dto.GroupBuyPostCreateResponse;
-import com.weshare.server.groupbuy.dto.GroupBuyPostDto;
-import com.weshare.server.groupbuy.dto.GroupBuyPostResponse;
+import com.weshare.server.groupbuy.dto.*;
 import com.weshare.server.groupbuy.entity.GroupBuyPost;
+import com.weshare.server.groupbuy.exception.GroupBuyPostException;
+import com.weshare.server.groupbuy.exception.GroupBuyPostExceptions;
 import com.weshare.server.groupbuy.service.GroupBuyAggregateService;
 import com.weshare.server.user.entity.User;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
@@ -12,6 +11,7 @@ import com.weshare.server.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,5 +48,48 @@ public class GroupBuyPostController {
         GroupBuyPostResponse groupBuyPostResponse = new GroupBuyPostResponse(groupBuyPostDto);
         return  ResponseEntity.ok(groupBuyPostResponse);
     }
+
+    @Operation(
+            summary = "공동구매 게시글 전체 조회 API [페이징 제공]",
+            description = "쿼리 스트링을 들어온 조건에 따라 공동구매 게시글을 페이징하여 제공하는 API로 두번째 페이지 부턴 lastPostId로 받은 포스트 id 이후의 게시글을 제공함"
+    )
+    @GetMapping
+    public ResponseEntity<GroupBuyPostListResponse> getGroupBuyPosts(@RequestParam Long locationId,
+                                                                     @RequestParam(required = false) Integer priceLowLimit,
+                                                                     @RequestParam(required = false) Integer priceHighLimit,
+                                                                     @RequestParam(required = false) Integer amount,
+                                                                     @RequestParam(required = false) Long categoryId,
+                                                                     @RequestParam (required = false) Long lastPostId,
+                                                                     @RequestParam(defaultValue = "DESC") Sort.Direction sortDirection,
+                                                                     @RequestParam(defaultValue = "10") Integer size,
+                                                                     @AuthenticationPrincipal CustomOAuth2User principal){
+        GroupBuyPostFilterDto request = GroupBuyPostFilterDto.builder()
+                .locationId(locationId)
+                .priceLowLimit(priceLowLimit)
+                .priceHighLimit(priceHighLimit)
+                .amount(amount)
+                .sortDirection(sortDirection)
+                .size(size)
+                .categoryId(categoryId)
+                .lastPostId(lastPostId)
+                .build();
+
+        List<GroupBuyPostDto> groupBuyPostDtoList = groupBuyAggregateService.getPostsWithImage(request,principal);
+        Integer totalPostCount = groupBuyPostDtoList.size();
+
+        // 조건에 맞는 물품교환 게시글이 없는 경우
+        if(groupBuyPostDtoList.isEmpty()){
+            return  ResponseEntity.ok(new GroupBuyPostListResponse(0, List.of(),null));
+        }
+
+        // 조건에 맞는 물품교환 게시글이 존재하는 경우
+        // 마지막 응답객체의 ID
+        Optional<Long> lastIdPot = groupBuyPostDtoList.stream().map(GroupBuyPostDto::getGroupBuyPostId).reduce((first,second)->second);
+        Long lastId = lastIdPot.orElseThrow(()-> new GroupBuyPostException(GroupBuyPostExceptions.NOT_EXIST_GROUP_POST));
+        GroupBuyPostListResponse groupBuyPostListResponse = new GroupBuyPostListResponse(totalPostCount,groupBuyPostDtoList,lastId);
+        return ResponseEntity.ok(groupBuyPostListResponse);
+    }
+
+
 
 }
