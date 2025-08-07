@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "group_buy_participant")
+@Table(name = "group_buy_participant", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","group_buy_post_id"}))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class GroupBuyParticipant extends BaseTimeEntity {

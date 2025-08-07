@@ -1,12 +1,11 @@
 package com.weshare.server.groupbuy.service;
 
 import com.weshare.server.aws.s3.service.S3Service;
-import com.weshare.server.groupbuy.dto.GroupBuyPostCreateRequest;
-import com.weshare.server.groupbuy.dto.GroupBuyPostCreateResponse;
-import com.weshare.server.groupbuy.dto.GroupBuyPostDto;
-import com.weshare.server.groupbuy.dto.GroupBuyPostFilterDto;
+import com.weshare.server.groupbuy.dto.*;
 import com.weshare.server.groupbuy.entity.GroupBuyParticipant;
 import com.weshare.server.groupbuy.entity.GroupBuyPost;
+import com.weshare.server.groupbuy.exception.GroupBuyPostException;
+import com.weshare.server.groupbuy.exception.GroupBuyPostExceptions;
 import com.weshare.server.groupbuy.service.image.GroupBuyPostImageService;
 import com.weshare.server.groupbuy.service.participant.GroupBuyParticipantService;
 import com.weshare.server.groupbuy.service.post.GroupBuyPostService;
@@ -22,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -120,5 +120,21 @@ public class GroupBuyAggregateService {
         }
 
         return  groupBuyPostDtoList;
+    }
+
+    @Transactional
+    public GroupBuyParticipant doGroupBuyParticipant(GroupBuyParticipantRequest request, CustomOAuth2User principal){
+        User user = userService.findUserByUsername(principal.getUsername());
+        GroupBuyPost groupBuyPost = groupBuyPostService.findPostById(request.getGroupBuyPostId());
+        Optional<GroupBuyParticipant> optionalGroupBuyParticipant = groupBuyParticipantService.findByGroupBuyPostAndUser(groupBuyPost,user);
+
+        // 기존에 해당 공동구매에 참여한 사용자인 경우 -> 예외 발생
+        if(optionalGroupBuyParticipant.isPresent()){
+            throw new GroupBuyPostException(GroupBuyPostExceptions.ALREADY_GROUP_BUY_PARTICIPANT_USER);
+        }
+
+        // 기존에 해당 공동구매에 참여한적이 없은 사용자인 경우 -> 정상처리
+        GroupBuyParticipant groupBuyParticipant = groupBuyParticipantService.enrollGroupBuyParticipant(groupBuyPost,user, request.getAmount());
+        return groupBuyParticipant;
     }
 }
