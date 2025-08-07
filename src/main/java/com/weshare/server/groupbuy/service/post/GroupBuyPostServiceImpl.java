@@ -5,12 +5,14 @@ import com.weshare.server.category.exception.CategoryException;
 import com.weshare.server.category.exception.CategoryExceptions;
 import com.weshare.server.category.repository.CategoryRepository;
 import com.weshare.server.groupbuy.dto.GroupBuyPostCreateRequest;
+import com.weshare.server.groupbuy.dto.GroupBuyPostFilterDto;
 import com.weshare.server.groupbuy.entity.GroupBuyPost;
 import com.weshare.server.groupbuy.exception.GroupBuyPostException;
 import com.weshare.server.groupbuy.exception.GroupBuyPostExceptions;
 import com.weshare.server.groupbuy.repository.GroupBuyParticipantRepository;
 import com.weshare.server.groupbuy.repository.GroupBuyPostLikeRepository;
 import com.weshare.server.groupbuy.repository.GroupBuyPostRepository;
+import com.weshare.server.groupbuy.service.GroupBuyPostSpecification;
 import com.weshare.server.location.entity.Location;
 import com.weshare.server.location.exception.LocationException;
 import com.weshare.server.location.exception.LocationExceptions;
@@ -22,12 +24,17 @@ import com.weshare.server.user.exception.UserExceptions;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import com.weshare.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -102,5 +109,42 @@ public class GroupBuyPostServiceImpl implements GroupBuyPostService{
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
         return Objects.equals(groupBuyPost.getUser().getId(),user.getId());
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<GroupBuyPost> getFilteredGroupBuyPost(GroupBuyPostFilterDto request) {
+
+        if (request.getPriceLowLimit() != null && request.getPriceHighLimit() != null && request.getPriceLowLimit() > request.getPriceHighLimit()) {
+            throw new GroupBuyPostException(GroupBuyPostExceptions.PRICE_BAD_REQUEST);
+        }
+        if (request.getAmount() != null && request.getAmount() < 0) {
+            throw new GroupBuyPostException(GroupBuyPostExceptions.AMOUNT_BAD_REQUEST);
+        }
+
+        // 1) lastPostId가 없거나 유효하지 않으면 커서 조건을 아예 생략
+        GroupBuyPost lastPost = null;
+        Long lastPostId = request.getLastPostId();
+        if (lastPostId != null && lastPostId > 0){
+            lastPost = groupBuyPostRepository.findById(lastPostId).orElseThrow(()-> new GroupBuyPostException(GroupBuyPostExceptions.NOT_EXIST_GROUP_POST));
+        }
+
+        // 2) sortDirection을 Enum 바인딩(대소문자 자동 처리)
+        Sort.Direction direction = request.getSortDirection();
+
+        // 3) 스펙 빌드 (null인 lastPost는 buildSpec 내부에서 무시하도록 구현)
+        Specification<GroupBuyPost> spec = GroupBuyPostSpecification.buildSpec(request, lastPost);
+
+        // 4) 페이징 파라미터 유연화
+        int page = Optional.ofNullable(request.getPage()).orElse(0);
+        int size = Optional.ofNullable(request.getSize()).orElse(10);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "createdAt", "id"));
+
+        return groupBuyPostRepository.findAll(spec,pageable).getContent();
+    }
+
+    @Override
+    public Integer countParticipants(GroupBuyPost groupBuyPost) {
+        return groupBuyParticipantRepository.countByGroupBuyPostAndPaymentStatusIn(groupBuyPost,List.of(PaymentStatus.POST_OWNER,PaymentStatus.PAID));
     }
 }
