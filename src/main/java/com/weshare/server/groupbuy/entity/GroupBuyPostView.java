@@ -4,6 +4,7 @@ import com.weshare.server.common.entity.BaseTimeEntity;
 import com.weshare.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,10 @@ public class GroupBuyPostView extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_buy_post_id", nullable = false)
     private GroupBuyPost groupBuyPost;
+
+    @Builder
+    public GroupBuyPostView(User user, GroupBuyPost groupBuyPost) {
+        this.user = user;
+        this.groupBuyPost = groupBuyPost;
+    }
 }

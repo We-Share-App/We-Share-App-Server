@@ -3,25 +3,33 @@ package com.weshare.server.groupbuy.service;
 import com.weshare.server.aws.s3.service.S3Service;
 import com.weshare.server.groupbuy.dto.GroupBuyPostCreateRequest;
 import com.weshare.server.groupbuy.dto.GroupBuyPostCreateResponse;
+import com.weshare.server.groupbuy.dto.GroupBuyPostDto;
 import com.weshare.server.groupbuy.entity.GroupBuyParticipant;
 import com.weshare.server.groupbuy.entity.GroupBuyPost;
 import com.weshare.server.groupbuy.service.image.GroupBuyPostImageService;
 import com.weshare.server.groupbuy.service.participant.GroupBuyParticipantService;
 import com.weshare.server.groupbuy.service.post.GroupBuyPostService;
+import com.weshare.server.groupbuy.service.post.GroupBuyPostViewService;
+import com.weshare.server.payment.PaymentStatus;
+import com.weshare.server.user.entity.User;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
+import com.weshare.server.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class GroupBuyAggregateService {
+    private final UserService userService;
     private final GroupBuyPostService groupBuyPostService;
     private final GroupBuyParticipantService groupBuyParticipantService;
     private final GroupBuyPostImageService groupBuyPostImageService;
+    private final GroupBuyPostViewService groupBuyPostViewService;
     private final S3Service s3Service;
     private static final String directory = "groupBuy";
 
@@ -37,6 +45,41 @@ public class GroupBuyAggregateService {
         //GroupBuyParticipant 등록하기
         groupBuyParticipantService.addPostOwner(groupBuyPost,groupBuyPostCreateRequest.getWriterQuantity(),principal);
 
+        // GroupBuyPost 잔여개수 최신화 하기
+        groupBuyPostService.updateRemainQuantity(groupBuyPost,List.of(PaymentStatus.POST_OWNER));
+
         return new GroupBuyPostCreateResponse(true,groupBuyPost.getId());
+    }
+
+    @Transactional
+    public GroupBuyPostDto getOnePostWithImage(Long groupBuyPostId, CustomOAuth2User principal){
+        // 게시글 찾기
+        GroupBuyPost groupBuyPost = groupBuyPostService.findPostById(groupBuyPostId);
+        // 게시글 이미지 찾기
+        List<String> presignedUrlList = groupBuyPostImageService.getImageKey(groupBuyPost).stream().map(s3Service::getPresignedUrl).collect(Collectors.toList());
+        // 좋아요 개수 카운트
+        Long likes = groupBuyPostService.getLikeCount(groupBuyPost);
+        Boolean isUserLiked = groupBuyPostService.isUserLikedPost(groupBuyPost,principal);
+        Long viewCount = groupBuyPostViewService.updateViewCount(groupBuyPostId, principal);
+        Boolean isYours = groupBuyPostService.isPostWriter(groupBuyPost,principal);
+
+        GroupBuyPostDto groupBuyPostDto = GroupBuyPostDto.builder()
+                .groupBuyPostId(groupBuyPost.getId())
+                .itemName(groupBuyPost.getItemName())
+                .itemDescription(groupBuyPost.getItemDescription())
+                .itemUrl(groupBuyPost.getItemUrl())
+                .itemPrice(groupBuyPost.getItemPrice())
+                .totalQuantity(groupBuyPost.getItemQuantity())
+                .remainQuantity(groupBuyPost.getRemainQuantity())
+                .imageUrlList(presignedUrlList)
+                .categoryName(groupBuyPost.getCategory().getCategoryName())
+                .expirationDateTime(groupBuyPost.getRecruitingExpirationDate())
+                .viewCount(viewCount)
+                .likes(likes)
+                .isUserLiked(isUserLiked)
+                .isYours(isYours)
+                .userNickname(groupBuyPost.getUser().getNickname())
+                .build();
+        return groupBuyPostDto;
     }
 }

@@ -11,6 +11,7 @@ import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import com.weshare.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class GroupBuyParticipantServiceImpl implements GroupBuyParticipantServic
     }
 
     @Override
+    @Transactional
     public GroupBuyParticipant addPostOwner(GroupBuyPost groupBuyPost, Integer quantity, CustomOAuth2User principal) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
         GroupBuyParticipant groupBuyParticipant = GroupBuyParticipant.builder()
