@@ -62,7 +62,7 @@ public class GroupBuyParticipantServiceImpl implements GroupBuyParticipantServic
         }
         GroupBuyParticipant participant = GroupBuyParticipant.builder()
                 .quantity(amount)
-                .paymentAmount(post.getItemPrice() * amount)
+                .paymentAmount(post.getItemPrice() * amount + groupBuyPost.getShippingFee())
                 .paymentStatus(PaymentStatus.PAID)  // 임시로 PAID
                 .user(user)
                 .groupBuyPost(post)
