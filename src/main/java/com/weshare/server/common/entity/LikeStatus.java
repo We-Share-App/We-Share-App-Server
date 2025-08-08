@@ -1,4 +1,4 @@
-package com.weshare.server.exchange.entity;
+package com.weshare.server.common.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
