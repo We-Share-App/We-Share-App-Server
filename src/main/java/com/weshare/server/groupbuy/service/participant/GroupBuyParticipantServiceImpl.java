@@ -13,6 +13,7 @@ import com.weshare.server.user.exception.UserExceptions;
 import com.weshare.server.user.jwt.oauthJwt.dto.CustomOAuth2User;
 import com.weshare.server.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,8 +67,13 @@ public class GroupBuyParticipantServiceImpl implements GroupBuyParticipantServic
                 .user(user)
                 .groupBuyPost(post)
                 .build();
-        groupBuyParticipantRepository.save(participant);
+
         // 4) 재고 차감 (Transaction 커밋 시점에 JPA가 변경 감지해서 UPDATE 쿼리 날림)
+        try {
+            groupBuyParticipantRepository.save(participant);
+        } catch (DataIntegrityViolationException e) {
+            throw new GroupBuyPostException(GroupBuyPostExceptions.ALREADY_GROUP_BUY_PARTICIPANT_USER);
+        }
         post.updateRemainQuantity(post.getRemainQuantity() - amount);
 
         return participant;
