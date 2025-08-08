@@ -1,4 +1,4 @@
-package com.weshare.server.exchange.dto;
+package com.weshare.server.groupbuy.dto;
 
 import com.weshare.server.common.entity.LikeStatus;
 import lombok.Builder;
@@ -7,15 +7,15 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class ExchangePostLikeResponse {
+public class GroupBuyPostLikeResponse {
     private Boolean isSuccess;
-    private Long exchangePostLikeId;
+    private Long groupBuyPostLikeId;
     private LikeStatus likeStatus;
 
     @Builder
-    public ExchangePostLikeResponse(Boolean isSuccess, Long exchangePostLikeId, LikeStatus likeStatus) {
+    public GroupBuyPostLikeResponse(Boolean isSuccess, Long groupBuyPostLikeId, LikeStatus likeStatus) {
         this.isSuccess = isSuccess;
-        this.exchangePostLikeId = exchangePostLikeId;
+        this.groupBuyPostLikeId = groupBuyPostLikeId;
         this.likeStatus = likeStatus;
     }
 }

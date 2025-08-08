@@ -14,7 +14,7 @@ public interface ExchangePostLikeRepository extends JpaRepository<ExchangePostLi
         select count(e)
         from ExchangePostLike e
         where e.exchangePost = :post
-          and e.likeStatus = com.weshare.server.exchange.entity.LikeStatus.ACTIVATED
+          and e.likeStatus = com.weshare.server.common.entity.LikeStatus.ACTIVATED
     """)
     Long countActiveExchangePostLike(@Param("post") ExchangePost post);
 
@@ -23,7 +23,7 @@ public interface ExchangePostLikeRepository extends JpaRepository<ExchangePostLi
     from ExchangePostLike e
     where e.user = :user
       and e.exchangePost = :post
-      and e.likeStatus = com.weshare.server.exchange.entity.LikeStatus.ACTIVATED
+      and e.likeStatus = com.weshare.server.common.entity.LikeStatus.ACTIVATED
     """)
     Boolean existsActiveLikeByUserAndExchangePost(@Param("user") User user, @Param("post") ExchangePost post);
 

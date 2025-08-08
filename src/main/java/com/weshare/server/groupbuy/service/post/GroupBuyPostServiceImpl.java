@@ -95,16 +95,18 @@ public class GroupBuyPostServiceImpl implements GroupBuyPostService{
     @Override
     @Transactional
     public Long getLikeCount(GroupBuyPost groupBuyPost) {
-        return groupBuyPostLikeRepository.countByGroupBuyPost(groupBuyPost);
+        return groupBuyPostLikeRepository.countActiveGroupBuyPostLike(groupBuyPost);
     }
 
     @Override
+    @Transactional
     public Boolean isUserLikedPost(GroupBuyPost groupBuyPost, CustomOAuth2User principal) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
-        return groupBuyPostLikeRepository.existsByUserAndGroupBuyPost(user, groupBuyPost);
+        return groupBuyPostLikeRepository.existsActiveLikeByUserAndGroupBuyPost(user, groupBuyPost);
     }
 
     @Override
+    @Transactional
     public Boolean isPostWriter(GroupBuyPost groupBuyPost, CustomOAuth2User principal) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()-> new UserException(UserExceptions.USER_NOT_FOUND));
         return Objects.equals(groupBuyPost.getUser().getId(),user.getId());
@@ -144,6 +146,7 @@ public class GroupBuyPostServiceImpl implements GroupBuyPostService{
     }
 
     @Override
+    @Transactional
     public Integer countParticipants(GroupBuyPost groupBuyPost) {
         return groupBuyParticipantRepository.countByGroupBuyPostAndPaymentStatusIn(groupBuyPost,List.of(PaymentStatus.POST_OWNER,PaymentStatus.PAID));
     }

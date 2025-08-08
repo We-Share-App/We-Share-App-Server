@@ -2,7 +2,7 @@ package com.weshare.server.exchange.service.like;
 
 import com.weshare.server.exchange.entity.ExchangePost;
 import com.weshare.server.exchange.entity.ExchangePostLike;
-import com.weshare.server.exchange.entity.LikeStatus;
+import com.weshare.server.common.entity.LikeStatus;
 import com.weshare.server.exchange.exception.post.ExchangePostException;
 import com.weshare.server.exchange.exception.post.ExchangePostExceptions;
 import com.weshare.server.exchange.repository.ExchangePostLikeRepository;

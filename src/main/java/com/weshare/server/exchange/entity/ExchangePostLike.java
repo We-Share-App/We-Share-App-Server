@@ -1,6 +1,7 @@
 package com.weshare.server.exchange.entity;
 
 import com.weshare.server.common.entity.BaseTimeEntity;
+import com.weshare.server.common.entity.LikeStatus;
 import com.weshare.server.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
