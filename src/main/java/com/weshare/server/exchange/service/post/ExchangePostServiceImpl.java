@@ -103,14 +103,14 @@ public class ExchangePostServiceImpl implements ExchangePostService{
     @Override
     @Transactional(readOnly = true)
     public Long getLikeCount(ExchangePost exchangePost) {
-        return exchangePostLikeRepository.countByExchangePost(exchangePost);
+        return exchangePostLikeRepository.countActiveExchangePostLike(exchangePost);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Boolean isUserLikedPost(CustomOAuth2User principal, ExchangePost exchangePost) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(()->new UserException(UserExceptions.USER_NOT_FOUND));
-        return exchangePostLikeRepository.existsByUserAndExchangePost(user, exchangePost);
+        return exchangePostLikeRepository.existsActiveLikeByUserAndExchangePost(user, exchangePost);
     }
 
     @Override
